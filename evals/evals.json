@@ -1,57 +1,35 @@
-[
-  {
-    "id": "prompt-optimization",
-    "description": "Optimize a classification prompt iteratively",
-    "prompt": "I have a customer support ticket classifier that scores 68% accuracy. Use autoresearch-skill to optimize the system prompt until it reaches 90%+ accuracy on my 50 test cases.",
-    "expected_behavior": [
-      "Creates or reads research.md with goal, metric (accuracy), target (>90%)",
-      "Runs iterative loop: modify prompt → test against cases → evaluate → keep/revert",
-      "Produces research_log.md with all iterations",
-      "Produces final_report.md with best prompt and accuracy"
-    ]
-  },
-  {
-    "id": "literature-review",
-    "description": "Systematic literature review via web research",
-    "prompt": "Research the latest advances in LLM agents for scientific discovery. Find and synthesize at least 15 papers from 2024-2026.",
-    "expected_behavior": [
-      "Creates research.md with coverage metric",
-      "Iteratively searches arxiv, semantic scholar, google scholar",
-      "Builds taxonomy of approaches",
-      "Produces structured review report"
-    ]
-  },
-  {
-    "id": "code-optimization",
-    "description": "Benchmark-driven code optimization",
-    "prompt": "My sorting function takes 2.3 seconds on 1M items. Use autoresearch-skill to optimize it below 0.5 seconds.",
-    "expected_behavior": [
-      "Creates research.md with execution_time metric (minimize)",
-      "Iterates: modify algorithm → benchmark → evaluate → keep/revert",
-      "Tries multiple strategies (algorithm change, data structure, etc.)",
-      "Produces final_report.md with fastest implementation"
-    ]
-  },
-  {
-    "id": "checkpoint-resume",
-    "description": "Resume interrupted research from checkpoint",
-    "prompt": "Continue the research in ./my-research/ from where it left off.",
-    "expected_behavior": [
-      "Reads existing research.md and research_log.md",
-      "Identifies last completed iteration",
-      "Continues from next iteration without repeating work",
-      "Appends to existing log"
-    ]
-  },
-  {
-    "id": "safety-max-iterations",
-    "description": "Graceful stop at max iterations",
-    "prompt": "Optimize this config with max 5 iterations.",
-    "expected_behavior": [
-      "Respects max_iterations constraint",
-      "Stops at iteration 5 even if target not reached",
-      "Produces final_report.md with best result so far",
-      "Notes that target was not reached in report"
-    ]
-  }
-]
+{
+  "skill_name": "autoresearch-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a customer support ticket classifier that scores 68% accuracy. Use autoresearch-skill to optimize the system prompt until it reaches 90%+ accuracy on my 50 test cases.",
+      "expected_output": "Creates research.md, runs iterative loop (modify prompt → test → evaluate → keep/revert), produces research_log.md and final_report.md with best prompt achieving >90% accuracy.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Research the latest advances in LLM agents for scientific discovery. Find and synthesize at least 15 papers from 2024-2026.",
+      "expected_output": "Creates research.md with coverage metric, iteratively searches arxiv/scholar, builds taxonomy, produces structured review report with 15+ papers.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My sorting function takes 2.3 seconds on 1M items. Use autoresearch-skill to optimize it below 0.5 seconds.",
+      "expected_output": "Creates research.md with execution_time metric (minimize), iterates through algorithm changes with benchmarks, produces final_report.md with fastest implementation.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Continue the research in ./my-research/ from where it left off.",
+      "expected_output": "Reads existing research.md and research_log.md, identifies last completed iteration, continues from next iteration without repeating, appends to existing log.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Optimize this config with max 5 iterations.",
+      "expected_output": "Respects max_iterations=5, stops at iteration 5 even if target not reached, produces final_report.md noting target was not achieved.",
+      "files": []
+    }
+  ]
+}
