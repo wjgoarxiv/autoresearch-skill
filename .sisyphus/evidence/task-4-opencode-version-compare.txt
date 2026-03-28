@@ -1,0 +1,4 @@
+Task 4 - OpenCode version comparison
+Before upgrade command: 1.3.3
+After upgrade command: 1.3.3
+Comparison result: unchanged; `opencode upgrade v1.3.3 --method curl` reported the target version was already installed.

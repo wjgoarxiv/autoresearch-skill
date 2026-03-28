@@ -1,0 +1,1 @@
+[STATUS] NORMAL mode (GPT-5.4 complex + GPT-5.3 Codex coding + Spark helpers)

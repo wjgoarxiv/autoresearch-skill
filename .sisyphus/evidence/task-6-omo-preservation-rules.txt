@@ -1,0 +1,27 @@
+Task 6: preservation rules for oh-my-opencode refresh
+
+1. `oh-my-opencode.json` authority
+- Keep `/Users/woojin/.config/opencode/oh-my-opencode.json` as the authoritative user-level plugin config.
+- Do not casually regenerate it from installer prompts or provider flags.
+- Preserve its curated agent/category assignments and existing settings, including `google_auth` and `sisyphus_agent`, unless a later verified smoke test proves a specific fix is required.
+
+2. Exact `opencode.json` plugin-array preservation
+- Preserve the `plugin` array in `/Users/woojin/.config/opencode/opencode.json` exactly as-is, with identical content and identical order.
+- Required live order:
+  1. `oh-my-opencode@latest`
+  2. `opencode-openai-codex-auth`
+  3. `file:///Users/woojin/.config/opencode/plugins/codex-quota.js`
+- Do not drop, append, sort, normalize, or reorder these entries during the refresh.
+
+3. Why the refresh command is preservation-first
+- User-level `oh-my-opencode` config is the base config in source, and project config only overrides it via deep merge.
+- Source tests show config merges preserve existing agent/category fields rather than replacing them wholesale.
+- Because the current config already exists and Task 5 verified the plugin array and config files, the safest refresh is a plain reinstall entrypoint followed by strict post-run diff checks.
+
+4. Auth scope rule
+- No auth reconfiguration is planned during the refresh.
+- Do not run login flows or add new auth plugins as part of Task 7 unless a later smoke test demonstrates actual breakage.
+
+5. Installer-flag rule
+- Do not add provider-selection flags (`--claude`, `--openai`, `--gemini`, `--copilot`, `--opencode-zen`, `--zai-coding-plan`) for this refresh.
+- Those flags are intended for initial configuration choices and risk redefining the current model/provider setup.

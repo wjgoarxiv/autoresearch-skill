@@ -1,0 +1,22 @@
+Task 6: preservation-first oh-my-opencode refresh command
+
+Chosen runtime: bunx
+Why this runtime: `command -v bunx` succeeds on this machine at `/Users/woojin/.bun/bin/bunx`, so the recommended Bun entrypoint is available. `npx` also exists, but it is the fallback only when Bun is unavailable.
+
+Exact Task 7 command:
+`bunx oh-my-opencode install`
+
+Why this is the preservation-first command:
+- The mirrored install docs list `bunx oh-my-opencode install` as the recommended installer entrypoint.
+- The mirrored CLI guide uses the same plain command as the reinstall path for a plugin registration repair.
+- Avoiding provider flags is safer here because the install docs say non-interactive flags configure agent models based on subscription answers, while the same docs also warn not to change model settings or disable features unless explicitly requested.
+- The current environment already has a curated `/Users/woojin/.config/opencode/oh-my-opencode.json` and a verified plugin array, so the safest refresh is the plain installer entrypoint with post-run diff checks rather than a fresh reconfiguration command.
+
+Why no auth change is planned:
+- Authentication reconfiguration is out of scope for Task 6 and Task 7 preparation.
+- The mirrored install docs treat auth as a later step after installation, not part of the installer entrypoint itself.
+- The current preservation goal is to refresh the plugin without redefining providers or model choices.
+- Auth should remain untouched unless a later smoke test proves breakage.
+
+Runtime fallback if Bun disappears before Task 7:
+`npx oh-my-opencode install`

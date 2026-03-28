@@ -5,5 +5,6 @@
     "ses_2cb01b45dffe0Ort5dvlAtIodh"
   ],
   "plan_name": "update-opencode-oh-my-opencode",
-  "agent": "atlas"
+  "agent": "atlas",
+  "worktree_path": "/Users/woojin/Desktop/02_Areas/01_Codes_automation/14_autoresearch-skill-update-opencode-oh-my-opencode"
 }
