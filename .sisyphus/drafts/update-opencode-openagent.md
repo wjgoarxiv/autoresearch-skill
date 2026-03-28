@@ -3,6 +3,8 @@
 ## Requirements (confirmed)
 - [request]: Help update the currently used `OpenCode` and `oh-my-openagent`.
 - [request]: Help set up plan(s) for the update work.
+- [decision]: Plan should optimize for one safe update now.
+- [decision]: Update style should be backup-first in place.
 
 ## Technical Decisions
 - [approach]: Explore actual local installation/update paths before proposing any update procedure.
@@ -19,10 +21,14 @@
 - [local docs]: `/Users/woojin/.config/opencode/temp_search_repo/README.md` states Oh My OpenCode 3.0 is stable and recommends `oh-my-opencode@latest` installation.
 - [local docs]: `/Users/woojin/.config/opencode/temp_search_repo/docs/guide/installation.md` exists and should be used as the authoritative install/update reference.
 - [rollback posture]: Existing local evidence supports backup/rollback planning through config backups and documented keep/revert patterns, but no complete target-specific update SOP is already written.
+- [opencode version]: `opencode --version` returns `1.3.3`.
+- [opencode binary]: Installed binary resolves to `/Users/woojin/.opencode/bin/opencode`, which suggests a standalone/script-managed install rather than Homebrew.
+- [official opencode update]: Official docs support `opencode upgrade`, optional pinned upgrades like `opencode upgrade vX.Y.Z`, and method override via `--method`.
+- [official opencode install]: Official docs list `curl -fsSL https://opencode.ai/install | bash` and `brew install anomalyco/tap/opencode` among supported installation methods.
+- [oh-my-opencode install]: Official/local docs recommend `bunx oh-my-opencode install` or `npx oh-my-opencode install`; non-interactive mode is available with provider flags.
 
 ## Open Questions
-- [goal]: Is the target only updating the tools, or also establishing an ongoing repeatable update/verification workflow?
-- [risk tolerance]: Should the plan prefer in-place update, side-by-side reinstall, or backup-first replacement?
+- [naming]: User asked for `oh-my-openagent`; current environment evidence points to `oh-my-opencode` as the installed plugin. Defaulting to that target unless contradicted.
 
 ## Scope Boundaries
 - INCLUDE: Discover current install method, define update sequence, define verification and rollback.
