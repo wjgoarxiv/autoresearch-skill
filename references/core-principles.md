@@ -1,8 +1,8 @@
 # Core Principles
 
-Seven principles behind the autonomous research loop, derived from [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) and generalized for any domain.
+Eight principles behind the autonomous research loop, derived from [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) and generalized for any domain.
 
-## The Seven Principles
+## The Eight Principles
 
 | # | Principle | Definition | research.md Field |
 |---|-----------|-----------|-------------------|
@@ -13,6 +13,7 @@ Seven principles behind the autonomous research loop, derived from [Karpathy's a
 | 5 | **Full History** | Record every attempt — successes AND failures. Failed approaches are as valuable as successful ones: they constrain the search space. | `History` table + `research_log.md` |
 | 6 | **Constrained Search** | Explicitly define what can change and what cannot. Without boundaries, the agent may "cheat" (e.g., modifying the test set to improve accuracy). | `Search Space → Allowed / Forbidden` |
 | 7 | **Autonomous Loop** | The loop runs without human intervention. Pausing for approval defeats the purpose — the agent must be trusted within its constraints. | `Constraints → pause_every: never` |
+| 8 | **Relentless Persistence** | The loop runs until the budget is spent or the target is met. Stopping early is a last resort, not a default. | `Autonomy Directive` in SKILL.md |
 
 ## Why Each Principle Matters
 
@@ -51,6 +52,11 @@ Seven principles behind the autonomous research loop, derived from [Karpathy's a
 - **Violation consequence:** The loop becomes a human-assisted tool rather than an autonomous agent. Iteration rate drops from ~12/hour to ~2/hour.
 - **Exception:** `pause_every: N` is allowed for safety-critical domains, but should be the exception, not the default.
 
+### 8. Relentless Persistence
+- **Why:** The value of autoresearch compounds with iterations. 4 iterations finds local optima. 20 iterations discovers paradigm shifts. Early stopping leaves the most valuable experiments unrun.
+- **Violation consequence:** The agent stops at iteration 4 with a mediocre result. The breakthrough that would have come at iteration 12 never happens.
+- **Example:** Karpathy's autoresearch runs ~12 experiments/hour x 8 hours = ~100 experiments overnight. Stopping at 4 wastes 96% of the potential.
+
 ## Mapping to research.md
 
 Every principle maps directly to a field in the `research.md` template:
@@ -64,3 +70,4 @@ Every principle maps directly to a field in the `research.md` template:
 | Full History | `## History` + `research_log.md` | Append-only tables and detailed logs |
 | Constrained Search | `## Search Space` | Allowed and Forbidden explicitly listed |
 | Autonomous Loop | `## Constraints → pause_every` | Default: `never` |
+| Relentless Persistence | `Autonomy Directive` in SKILL.md | Agent instructed to never stop until budget spent or target met |

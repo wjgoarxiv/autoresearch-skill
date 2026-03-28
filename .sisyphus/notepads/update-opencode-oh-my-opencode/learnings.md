@@ -6,3 +6,4 @@
 - Task 4 confirmed `opencode upgrade v1.3.3 --method curl` is a safe no-op when `1.3.3` is already installed; the command reported `upgrade skipped` and `opencode --version` still returned `1.3.3` immediately afterward.
 - Task 7 learned that plain `bunx oh-my-opencode install` is TTY-bound in this environment; Task 8 should treat the captured raw output as a blocker unless a preservation-safe interactive session is available.
 - Task 7 retry verified from local docs/source that `--no-tui` is not preservation-safe for an already-configured install because it requires explicit provider/subscription flags; the tighter blocker is documented in task-7 evidence.
+- 2026-03-28T16:49:37Z Interactive Task 7 execution can drift live plugin naming/order (including `oh-my-openagent@latest`); restoring both live config files from `pre-update-20260329-011819` cleanly reestablishes the preserved baseline.

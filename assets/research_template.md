@@ -9,9 +9,11 @@
 - **Direction:** {maximize | minimize}
 
 ## Constraints
-- **Max iterations:** 10
+- **Max iterations:** 20
 - **Time budget per experiment:** 5 minutes
 - **Pause for review every:** never
+- **Evaluator:** {optional: command that outputs JSON, e.g., `python evaluate.py`}
+- **Keep policy:** score_improvement
 - {Add domain-specific constraints here}
 
 ## Current Approach

@@ -25,6 +25,21 @@ allowed-tools:
 
 Autonomous research loop inspired by Karpathy's autoresearch. Where autoresearch optimizes ML training on a single GPU, this skill generalizes the loop to any domain: prompt engineering, literature review, code optimization, configuration tuning, and more. You write a `research.md` -- the agent does the rest.
 
+## Autonomy Directive
+
+**You are an autonomous research agent.** Once the loop begins:
+
+1. **NEVER STOP** to ask for permission. The user may be asleep.
+2. **NEVER ASK** "should I continue?" or "is this a good stopping point?"
+3. **NEVER SUMMARIZE AND WAIT.** After logging an iteration, begin the next one immediately.
+4. **The loop runs until one of three conditions is met:**
+   - The target metric is achieved (success)
+   - `max_iterations` is exhausted (budget spent — this is normal, not failure)
+   - The user manually interrupts
+5. **If none of these conditions are true, you MUST begin the next iteration immediately.**
+
+Think of `max_iterations` as a budget to *spend*, not a limit to *fear*. Using all 20 iterations means you gave the problem your full effort. Stopping at iteration 4 means you gave up.
+
 ## When to Use This Skill
 
 - **Prompt optimization:** Iteratively improve system prompts against test cases
@@ -71,7 +86,7 @@ Five-stage loop, repeating until the success metric is met or constraints are ex
 
 **Stage 4 -- Evaluate:** Measure the result against the defined success metric. Compare to baseline and to the best result so far. Determine: improved, regressed, or no change?
 
-**Stage 5 -- Log & Iterate:** If improved -- keep the change, update the best-known result. If not -- revert the change, log the failure reason. In both cases: append a row to the History table in `research.md`, append detailed notes to `research_log.md`. Then check: target met? Max iterations reached? If neither, loop back to Stage 1.
+**Stage 5 -- Log & Iterate:** If improved (or evaluator returns pass+score_improvement) -- keep the change, update the best-known result. If not -- revert the change, log the failure reason. In both cases: append a row to the History table in `research.md`, append detailed notes to `research_log.md`, append a row to `autoresearch-results.tsv`. Then check termination conditions: (1) Target metric achieved? (2) Max iterations exhausted? If NEITHER condition is true, return to Stage 1 immediately — do not pause, do not summarize, do not ask the user. Begin the next iteration NOW.
 
 ## The research.md Format
 
@@ -86,6 +101,45 @@ The `research.md` file is both input and state. The user writes the top sections
 - **Search Space:** What the agent is allowed to change (allowed changes) and what it must never touch (forbidden changes). Explicit boundaries prevent the agent from "cheating" (e.g., modifying the test set).
 - **Context & References:** Background material -- papers, docs, URLs, code files. The agent reads these before starting.
 - **History:** Auto-maintained iteration table. Each row records what changed, the metric result, and whether the change was kept.
+
+## Optional: Mechanical Evaluator
+
+For Tier 1 environments, you can define an evaluator command that runs automatically after each experiment. This removes human judgment from the loop (Principle 2: Mechanical Verification).
+
+**In `research.md` Constraints section, add:**
+
+- **Evaluator:** `python evaluate.py`
+- **Keep policy:** score_improvement
+
+**Evaluator contract:**
+- The command runs in the research project directory
+- It must print a single JSON object to stdout: `{"pass": true, "score": 0.94}`
+- `pass` (boolean, required): did the experiment meet the minimum bar?
+- `score` (number, optional): numeric metric value for comparison
+- Non-zero exit code or invalid JSON = evaluator error — revert the change
+
+**Keep policies:**
+- `score_improvement` (default): keep only if `score` exceeds the previous best
+- `pass_only`: keep any experiment where `pass` is `true`
+
+**Stage 4 behavior with evaluator defined:**
+1. Run the evaluator command via Bash
+2. Parse the JSON output
+3. Apply the keep policy automatically
+4. Log the evaluator output in `research_log.md`
+5. If evaluator errors (crash, invalid JSON), treat as failed experiment — revert and continue
+
+**Without evaluator (default):**
+Stage 4 works as before — the agent measures the metric using available tools and applies its own judgment.
+
+**Example evaluator (`evaluate.py`):**
+```python
+#!/usr/bin/env python3
+import json, subprocess
+result = subprocess.run(["python", "test_classifier.py"], capture_output=True, text=True)
+accuracy = float(result.stdout.strip().split("accuracy:")[-1].strip())
+print(json.dumps({"pass": accuracy > 0.7, "score": accuracy}))
+```
 
 ## Usage
 
@@ -147,52 +201,50 @@ The skill produces three files:
 
 ## Safety & Guardrails
 
-- **`max_iterations`** (default: 10) -- Hard cap on loop iterations. Prevents runaway execution.
-- **`pause_every`** -- Optional human review interval. Set to `3` to pause every 3 iterations for user approval before continuing.
+- **`max_iterations`** (default: 20) -- Iteration budget. The agent should aim to USE all iterations, not stop early. Reaching max_iterations means the full budget was spent — this is a success, not a failure.
+- **`pause_every`** -- Optional human review checkpoint. Default: `never`. Only set this for safety-critical domains (e.g., production deployments). Pausing kills iteration velocity.
 - **Automatic rollback** -- Every experiment preserves the prior state. Failed experiments are reverted before the next iteration.
 - **`forbidden_changes`** -- Hard boundaries defined in `research.md`. The agent must never modify anything in this list (e.g., test data, API contracts, data formats).
 - **Time budget per experiment** -- Prevents a single experiment from hanging indefinitely. Default: 5 minutes.
 
-## Stuck Detection
+## Stuck Detection & Pivot Protocol
 
-When the loop stalls, the agent must recognize it and adapt:
+When the loop stalls, the agent must PIVOT, not stop:
 
 **Level 1 — Plateau (3 consecutive non-improving iterations):**
 - Stop making incremental changes to the current approach
-- Switch to a fundamentally different strategy
+- Switch to a fundamentally different strategy from a different region of the search space
 - Example: if stuck optimizing merge sort variants, try radix sort instead
-- Log the strategy switch in `research_log.md`
+- Log the strategy switch in `research_log.md`: "PIVOT: switching from [old strategy] to [new strategy]"
+- **Continue iterating.**
 
-**Level 2 — Deep Stuck (5 consecutive non-improving iterations):**
-- Attempt a radical architectural shift
-- Review all failed approaches and explicitly exclude them
-- Try the opposite of what has been tried (e.g., if all changes made things more complex, try simplifying)
-- If still stuck after 2 more attempts, stop the loop and produce `final_report.md`
+**Level 2 — Deep Plateau (5 consecutive non-improving iterations):**
+- Attempt a radical paradigm shift — the opposite of what has been tried
+- If all changes added complexity, try removing code. If all changes were conservative, try something bold.
+- Re-read the Context & References section for missed inspiration
+- Log: "DEEP PIVOT: exhausted [N] approaches in [category], shifting to [new paradigm]"
+- **Continue iterating.**
 
-**Level 3 — Irrecoverable (7 consecutive non-improving iterations):**
-- Stop gracefully
+**Level 3 — Exhaustion (only triggers when max_iterations is reached):**
+- This is NOT a failure — the budget was fully spent
 - Produce `final_report.md` with the best result achieved
-- Include a "Why the loop stalled" section analyzing the pattern of failures
-- Recommend manual investigation or constraint changes
+- Include a "Approaches Explored" section showing the full search trajectory
+- Include "Recommended Next Steps" for a follow-up run with fresh budget
 
 ## Endgame Strategy
 
-When operating in bounded mode (fixed max_iterations), the agent should shift strategy as iterations run out:
+When operating with a fixed `max_iterations` budget:
 
-**Normal mode (remaining iterations >= 3):**
-- Balance EXPLORE (trying new approaches) and EXPLOIT (refining known good approaches)
+**Normal mode (remaining iterations >= 2):**
+- Balance EXPLORE (new approaches) and EXPLOIT (refine best approach)
 - Prioritize approaches with high expected improvement
+- After each pivot, give the new strategy at least 2 iterations before judging it
 
-**Endgame mode (remaining iterations < 3):**
-- Switch entirely to EXPLOIT — refine the current best approach with micro-optimizations
-- Do NOT try risky new strategies that might regress
-- Focus on polishing: edge case handling, minor parameter tuning, code cleanup
-- Log the mode switch: "Entering endgame mode — switching from explore to exploit"
-
-**Last iteration:**
-- Make no changes that could regress
-- Focus on producing the cleanest possible `final_report.md`
-- Ensure `autoresearch-results.tsv` is complete and accurate
+**Last iteration only:**
+- Refine the current best approach with micro-optimizations
+- Ensure all output files are clean and complete
+- Produce `final_report.md`
+- Log: "Final iteration — producing report with best result: [metric value]"
 
 ## Edge Cases
 
@@ -201,10 +253,10 @@ When operating in bounded mode (fixed max_iterations), the agent should shift st
 | **No metric defined** | Refuse to start. Ask the user to define a measurable metric in `research.md`. |
 | **Experiment crashes** | Log the error, revert changes, try a different approach in the next iteration. |
 | **Same metric for 3+ iterations** | Shift strategy: try a fundamentally different approach rather than incremental tweaks. |
-| **Max iterations reached** | Stop gracefully. Produce `final_report.md` with the best result achieved. |
+| **Max iterations reached** | Full budget spent — produce `final_report.md` with best result. This is a normal outcome, not a failure. |
 | **User interrupts** | Save current state to `research_log.md`. The loop can resume from the last completed iteration. |
 | **Metric improves but breaks constraint** | Revert. Log as "constraint violation" -- the improvement does not count. |
-| **No search space left** | Stop early. Report that all allowed changes have been explored. |
+| **No search space left** | Expand search space: try combinations of previously-kept changes. If truly exhausted, produce `final_report.md` noting the search space was fully explored. |
 | **Ambiguous metric direction** | Ask the user to clarify: maximize or minimize? |
 
 ## Dependencies
@@ -216,6 +268,30 @@ When operating in bounded mode (fixed max_iterations), the agent should shift st
 **Tier 2 (research-only):** WebFetch and WebSearch tools for literature discovery.
 
 **Optional:** Domain-specific tools (compilers, simulators, test runners) as needed by the user's research.md.
+
+## Persistence: Overnight & Multi-Day Runs
+
+The autonomous loop runs within a single LLM session. For runs that should survive session boundaries:
+
+**Option 1 — `/loop` (session-scoped, simplest):**
+```
+/loop 6m "Continue the autoresearch loop in ./my-research/. Read research.md and research_log.md, pick up from the last completed iteration, and run the next experiment."
+```
+This re-invokes the skill every 6 minutes. Each invocation reads the file-based state (research.md History table + research_log.md) and continues where the last session left off. The loop persists as long as the terminal session is open.
+
+**Option 2 — `CronCreate` (cloud-scheduled, survives session exit):**
+```
+Use CronCreate to schedule: "Continue autoresearch in /path/to/my-research/" every 30 minutes.
+```
+This launches a fresh Claude Code session on schedule. Each session reads research.md, runs 1-3 iterations, and exits. The cron job re-launches it on the next schedule. Runs can persist for days.
+
+**Option 3 — `/ralph` wrapper (self-referential loop):**
+```
+/ralph "Run autoresearch on ./my-research/ until the target metric is met. Read research.md for the goal and current state."
+```
+Ralph's stop-hook re-feeds the prompt after each session exit, creating a persistent loop. The completion promise should be the target metric value.
+
+**Why this works:** All state lives in files (`research.md`, `research_log.md`, `autoresearch-results.tsv`). Any new session can read these files and resume from the last completed iteration. No in-memory state is required.
 
 ## Relationship to Other Skills
 

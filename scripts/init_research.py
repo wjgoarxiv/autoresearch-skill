@@ -26,6 +26,8 @@ RESEARCH_TEMPLATE = """\
 - **Max iterations:** {max_iterations}
 - **Time budget per experiment:** 5 minutes
 - **Pause for review every:** never
+- **Evaluator:** {evaluator}
+- **Keep policy:** {keep_policy}
 
 ## Current Approach
 _Describe your current baseline here._
@@ -92,14 +94,21 @@ def parse_args() -> argparse.Namespace:
         help="Whether to maximize or minimize the metric.",
     )
     parser.add_argument("--target", default="TBD", help="Target value or expression (e.g. '> 0.9', '< 0.5'). Default: TBD")
-    parser.add_argument("--max-iterations", type=int, default=10, metavar="N", help="Maximum number of iterations. Default: 10")
+    parser.add_argument("--max-iterations", type=int, default=20, metavar="N", help="Maximum number of iterations. Default: 20")
     parser.add_argument("--output", default="./research/", metavar="PATH", help="Output directory. Default: ./research/")
+    parser.add_argument("--evaluator", default=None, metavar="CMD",
+        help="Evaluator command (e.g. 'python evaluate.py'). Must output JSON {pass:bool, score?:number}.")
+    parser.add_argument("--keep-policy", default="score_improvement",
+        choices=["score_improvement", "pass_only"],
+        help="Keep policy: score_improvement (default) or pass_only.")
     return parser.parse_args()
 
 
-def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations: int, output: Path) -> None:
+def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations: int, output: Path,
+             evaluator: str | None = None, keep_policy: str = "score_improvement") -> None:
     date = datetime.now().strftime("%Y-%m-%d")
     title = goal_to_title(goal)
+    evaluator_str = f"`{evaluator}`" if evaluator else "_(none — agent judges manually)_"
 
     # Create output directory (fail-safe: exist_ok=True)
     output.mkdir(parents=True, exist_ok=True)
@@ -118,6 +127,8 @@ def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations
             target=target,
             direction=direction,
             max_iterations=max_iterations,
+            evaluator=evaluator_str,
+            keep_policy=keep_policy,
             date=date,
         )
     )
@@ -162,6 +173,8 @@ def main() -> None:
         target=args.target,
         max_iterations=args.max_iterations,
         output=output,
+        evaluator=args.evaluator,
+        keep_policy=args.keep_policy,
     )
 
 
