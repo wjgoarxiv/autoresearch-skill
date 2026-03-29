@@ -199,6 +199,16 @@ The skill produces three files:
 
 **`final_report.md` (generated at end):** Structured summary following the template in `assets/report_template.md`. Contains: Executive Summary, Best Result with exact configuration, Iteration Summary table, Key Findings, Failed Approaches, and Recommendations for further work.
 
+**`results.png` (generated at end):** Publication-quality visualization of the research results. This chart MUST follow scientific visualization standards:
+
+- **Two-panel layout:** Top panel shows metric convergence over iterations (kept vs reverted, best-so-far envelope, target line). Bottom panel shows the domain-specific result (prediction vs data, before/after comparison, etc.).
+- **Dark theme:** Dark background (#1a1a2e), bright accent colors for data series, white text, subtle grid.
+- **Annotated:** Label baseline value, best result, target line, and any PIVOT points.
+- **Color coding:** Blue/green for kept iterations, red for reverted, yellow dashed for target threshold.
+- **High resolution:** 200 DPI minimum, figure size at least 12x10 inches.
+
+Each example's `visualize.py` generates this chart. If the `/scientific-visualization` skill is available, use it for the plotting. Otherwise, use matplotlib with the dark theme specified above.
+
 ## Safety & Guardrails
 
 - **`max_iterations`** (default: 20) -- Iteration budget. The agent should aim to USE all iterations, not stop early. Reaching max_iterations means the full budget was spent — this is a success, not a failure.
