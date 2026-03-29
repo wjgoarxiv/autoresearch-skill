@@ -1,16 +1,7 @@
 ---
-name: pdf-elaborated
-description: |
-  Enhanced PDF toolkit with P&ID diagram analysis capabilities.
-  Extracts process streams, identifies equipment, traces flow paths,
-  and assigns ISA-5.1 stream numbers from engineering diagrams.
-  Improved through 8 iterations of autoresearch-skill.
-  Incorporates stuck detection, endgame strategy, and TSV logging.
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
+name: pdf
+description: Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When the LLM (Claude, ChatGPT, Gemini, or others) needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.
+license: Proprietary. LICENSE.txt has complete terms
 ---
 
 # PDF Processing Guide
@@ -108,6 +99,25 @@ with pdfplumber.open("document.pdf") as pdf:
                 print(row)
 ```
 
+#### Advanced Table Extraction
+```python
+import pandas as pd
+
+with pdfplumber.open("document.pdf") as pdf:
+    all_tables = []
+    for page in pdf.pages:
+        tables = page.extract_tables()
+        for table in tables:
+            if table:  # Check if table is not empty
+                df = pd.DataFrame(table[1:], columns=table[0])
+                all_tables.append(df)
+
+# Combine all tables
+if all_tables:
+    combined_df = pd.concat(all_tables, ignore_index=True)
+    combined_df.to_excel("extracted_tables.xlsx", index=False)
+```
+
 ### reportlab - Create PDFs
 
 #### Basic PDF Creation
@@ -117,25 +127,150 @@ from reportlab.pdfgen import canvas
 
 c = canvas.Canvas("hello.pdf", pagesize=letter)
 width, height = letter
+
+# Add text
 c.drawString(100, height - 100, "Hello World!")
+c.drawString(100, height - 120, "This is a PDF created with reportlab")
+
+# Add a line
 c.line(100, height - 140, 400, height - 140)
+
+# Save
 c.save()
+```
+
+#### Create PDF with Multiple Pages
+```python
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+
+doc = SimpleDocTemplate("report.pdf", pagesize=letter)
+styles = getSampleStyleSheet()
+story = []
+
+# Add content
+title = Paragraph("Report Title", styles['Title'])
+story.append(title)
+story.append(Spacer(1, 12))
+
+body = Paragraph("This is the body of the report. " * 20, styles['Normal'])
+story.append(body)
+story.append(PageBreak())
+
+# Page 2
+story.append(Paragraph("Page 2", styles['Heading1']))
+story.append(Paragraph("Content for page 2", styles['Normal']))
+
+# Build PDF
+doc.build(story)
 ```
 
 ## Command-Line Tools
 
 ### pdftotext (poppler-utils)
 ```bash
+# Extract text
 pdftotext input.pdf output.txt
+
+# Extract text preserving layout
 pdftotext -layout input.pdf output.txt
-pdftotext -f 1 -l 5 input.pdf output.txt
+
+# Extract specific pages
+pdftotext -f 1 -l 5 input.pdf output.txt  # Pages 1-5
 ```
 
 ### qpdf
 ```bash
+# Merge PDFs
 qpdf --empty --pages file1.pdf file2.pdf -- merged.pdf
+
+# Split pages
 qpdf input.pdf --pages . 1-5 -- pages1-5.pdf
-qpdf input.pdf output.pdf --rotate=+90:1
+qpdf input.pdf --pages . 6-10 -- pages6-10.pdf
+
+# Rotate pages
+qpdf input.pdf output.pdf --rotate=+90:1  # Rotate page 1 by 90 degrees
+
+# Remove password
+qpdf --password=mypassword --decrypt encrypted.pdf decrypted.pdf
+```
+
+### pdftk (if available)
+```bash
+# Merge
+pdftk file1.pdf file2.pdf cat output merged.pdf
+
+# Split
+pdftk input.pdf burst
+
+# Rotate
+pdftk input.pdf rotate 1east output rotated.pdf
+```
+
+## Common Tasks
+
+### Extract Text from Scanned PDFs
+```python
+# Requires: pip install pytesseract pdf2image
+import pytesseract
+from pdf2image import convert_from_path
+
+# Convert PDF to images
+images = convert_from_path('scanned.pdf')
+
+# OCR each page
+text = ""
+for i, image in enumerate(images):
+    text += f"Page {i+1}:\n"
+    text += pytesseract.image_to_string(image)
+    text += "\n\n"
+
+print(text)
+```
+
+### Add Watermark
+```python
+from pypdf import PdfReader, PdfWriter
+
+# Create watermark (or load existing)
+watermark = PdfReader("watermark.pdf").pages[0]
+
+# Apply to all pages
+reader = PdfReader("document.pdf")
+writer = PdfWriter()
+
+for page in reader.pages:
+    page.merge_page(watermark)
+    writer.add_page(page)
+
+with open("watermarked.pdf", "wb") as output:
+    writer.write(output)
+```
+
+### Extract Images
+```bash
+# Using pdfimages (poppler-utils)
+pdfimages -j input.pdf output_prefix
+
+# This extracts all images as output_prefix-000.jpg, output_prefix-001.jpg, etc.
+```
+
+### Password Protection
+```python
+from pypdf import PdfReader, PdfWriter
+
+reader = PdfReader("input.pdf")
+writer = PdfWriter()
+
+for page in reader.pages:
+    writer.add_page(page)
+
+# Add password
+writer.encrypt("userpassword", "ownerpassword")
+
+with open("encrypted.pdf", "wb") as output:
+    writer.write(output)
 ```
 
 ## Quick Reference
@@ -151,122 +286,19 @@ qpdf input.pdf output.pdf --rotate=+90:1
 | OCR scanned PDFs | pytesseract | Convert to image first |
 | Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md |
 
----
+## P&ID Analysis and Extraction
+P&IDs (Piping and Instrumentation Diagrams) depict piping, equipment, and instrumentation of a process flow diagram. Extract and analyze P&ID symbol data from PDFs as follows.
+### P&ID Symbol Identification
+P&ID symbols follow ISA 5.1 (ISO 14617) notation. Symbol shapes: circle = instrument/control device (tag format TIC-101), diamond = logic function (AY-100), rectangle = PLC/DCS display (HIC-100), arrow = flow direction indicator for process stream direction.
+### Process Stream Extraction
+Step 1: Identify all process stream lines connecting equipment; each line number uses notation size-service-sequence (example: 4"-CW-001). Step 2: Trace flow direction using arrow indicators on each piping run. Step 3: Record line number, service code, pipe size, and material for each process stream. Step 4: Map connections to build a complete process flow diagram topology.
+### Equipment Identification and Analysis
+Step 5: Identify equipment by equipment tag format -- Pump P-101A/B, Heat exchanger E-101, Vessel V-101, Tank T-101, Valve XV-101 or CV-201 (control valve). Step 6: Extract equipment tag, description, and design conditions from the title block.
+### Instrument and Control Loop Analysis
+Step 7: Identify instrument tags using ISA notation; tag format = function letters + loop number (example: FIC-101 = Flow Indicating Controller). Step 8: Trace each control loop from measurement point through controller to final control element (sensor, controller, valve). Step 9: Compile extracted data into structured tables -- equipment list with tags, process stream table with line numbers and flow direction, instrument index with control loop assignments, and piping notation summary per ISO 15519.
 
-## P&ID Diagram Analysis
-
-When analyzing Piping and Instrumentation Diagrams (P&IDs), use the following protocol to systematically identify equipment, trace process streams, and assign stream numbers. This section augments the general PDF toolkit with domain-specific knowledge for engineering diagram interpretation.
-
-### Equipment Recognition
-
-Identify equipment by matching visual symbols to their standard representations:
-
-| Symbol | Equipment Type | Visual Cue |
-|--------|---------------|------------|
-| Circle with arrow | Pump | Small circle, often with a triangular discharge arrow |
-| Cylinder (vertical) | Tank / Vessel | Vertical rectangle with rounded or dished ends |
-| Cylinder (horizontal) | Storage Tank | Horizontal rectangle with rounded ends |
-| Bowtie / hourglass | Valve | Two triangles meeting at a point |
-| Circle with "M" | Motor | Circle containing the letter M |
-| Rectangle with tubes | Heat Exchanger | Rectangle with internal parallel lines or U-tubes |
-| Dashed rectangle | Future / Planned System | Dashed outline indicating equipment not yet installed |
-| Trapezoid or triangle | Filter / Separator | Inverted triangle or wedge shape, sometimes with internal lines |
-| Rectangle on wheels | Truck / Mobile Equipment | Rectangle with circles beneath representing wheels |
-
-When scanning the diagram, proceed area by area (left to right, top to bottom). List each piece of equipment with its tag number if visible, or assign a positional label (e.g., "Pump-NW" for a pump in the northwest region).
-
-### Stream Identification Protocol
-
-Use simplified rules to identify process streams. Do NOT attempt step-by-step algorithmic tracing -- rules outperform procedural algorithms when used as LLM instructions.
-
-**Rule 1 -- Equipment Connections:** Any line connecting two equipment items is a stream. If a line runs from Pump P-01 to Tank T-02, that is one stream regardless of bends or direction changes along the path.
-
-**Rule 2 -- Boundary Crossings:** Any line entering or exiting the diagram boundary is a stream. These represent inlets (feed streams) and outlets (product or waste streams). Check all four edges of the diagram.
-
-**Rule 3 -- Parallel Lines:** Parallel lines running between the same two pieces of equipment are separate streams, not a single stream drawn twice. Each line represents a distinct process flow.
-
-**Rule 4 -- Instrument Taps:** Short lines terminating at instruments (pressure gauges, flow meters, temperature sensors) are instrument connections, NOT process streams. Do not count these.
-
-**Rule 5 -- Utility Lines:** Lines marked with utility designations (CW for cooling water, S for steam, IA for instrument air) are utility streams. Count them separately from process streams if the analysis scope includes utilities.
-
-### Flow Direction Inference
-
-When arrow indicators are absent, infer flow direction using engineering conventions:
-
-- **Pumps** push fluid from suction (inlet) to discharge (outlet). Flow exits in the direction the pump arrow points.
-- **Gravity flow** moves downward. If two vessels are at different elevations with no pump between them, flow moves from the higher vessel to the lower one.
-- **Arrows on lines** always indicate flow direction when present -- these override all other inference rules.
-- **Process logic** dictates flow from feed to product. Storage tanks typically feed process equipment, which feeds product tanks.
-- **Recycle streams** flow backward relative to the main process direction. They are identifiable by looping back to an upstream piece of equipment.
-
-### Stream Numbering Convention (ISA-5.1)
-
-Assign stream numbers following ISA-5.1 conventions:
-
-1. **Format:** Use the prefix `S-` followed by a two-digit sequential number: `S-01`, `S-02`, ..., `S-15`.
-2. **Numbering order:** Number streams by process area, then sequentially within each area. Start with the main process train (feed to product), then side streams, then utility streams.
-3. **Inlet streams** receive the lowest numbers in their process area.
-4. **Outlet streams** receive the highest numbers in their process area.
-5. **Recycle streams** are numbered after the forward-flow streams they parallel.
-
-### Bypass and Recycle Detection
-
-Bypass and recycle lines are commonly missed because they do not follow the main process flow path:
-
-- **Bypass lines** skip one or more pieces of equipment, running parallel to the main flow path. Look for lines that branch off before equipment and rejoin after it.
-- **Recycle lines** loop back from a downstream point to an upstream point. They often include a pump to overcome pressure drop.
-- **Purge streams** branch off a recycle loop and exit the system. They prevent accumulation of inerts.
-
-When stream count does not improve across multiple analysis passes, systematically check for these non-obvious stream types.
-
-### Structured Output Format
-
-Present identified streams as structured JSON for systematic verification:
-
-```json
-{
-  "equipment": [
-    {"id": "P-01", "type": "Pump", "location": "northwest"},
-    {"id": "T-01", "type": "Tank", "location": "north-center"}
-  ],
-  "streams": [
-    {
-      "id": "S-01",
-      "from": "Boundary-West",
-      "to": "TK-01",
-      "type": "inlet",
-      "direction": "left-to-right"
-    },
-    {
-      "id": "S-02",
-      "from": "TK-01",
-      "to": "P-01",
-      "type": "process",
-      "direction": "left-to-right"
-    }
-  ],
-  "summary": {
-    "total_equipment": 8,
-    "total_streams": 15,
-    "numbered_streams": 13
-  }
-}
-```
-
-### Stuck Detection Integration
-
-If the stream count does not increase after re-examining the diagram:
-
-1. **First plateau:** Switch recognition approach. If scanning left-to-right, try scanning by equipment type instead (all pumps, then all tanks, then all valves).
-2. **Second plateau:** Focus exclusively on diagram boundaries and bypass/recycle lines -- these are the most commonly missed stream categories.
-3. **Third plateau:** Accept the current count. The remaining undetected streams likely require process design intent knowledge not available from the diagram alone.
-
-### Endgame Polish
-
-On the final analysis pass, when stream count is near the expected total:
-
-1. Verify every numbered stream has both a source and a destination.
-2. Confirm no duplicate streams (two IDs for the same physical line).
-3. Cross-check equipment count against the equipment list.
-4. Produce the structured JSON output with all fields populated.
-5. Flag any streams with uncertain identification for manual review.
+## Next Steps
+- For advanced pypdfium2 usage, see reference.md
+- For JavaScript libraries (pdf-lib), see reference.md
+- If you need to fill out a PDF form, follow the instructions in forms.md
+- For troubleshooting guides, see reference.md

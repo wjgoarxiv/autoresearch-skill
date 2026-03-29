@@ -1,102 +1,61 @@
-"""
-Evaluation harness for skill-elaboration example.
-
-Simulates how each iteration of the improved /pdf skill performs on
-identifying streams in a P&ID diagram. Deterministic version profiles
-stand in for actual skill invocations.
-
-Ground truth: 15 streams, 8 equipment items.
-"""
-
+#!/usr/bin/env python3
+"""Structural evaluator for P&ID skill elaboration."""
 import json
+import re
 
-GROUND_TRUTH = {
-    "total_streams": 15,
-    "total_equipment": 8,
-}
+# Ground truth: what a good P&ID analysis skill should cover
+REQUIRED_CONCEPTS = [
+    "process stream", "flow direction", "equipment tag",
+    "valve", "pump", "heat exchanger", "vessel", "tank",
+    "instrument", "control loop", "line number",
+    "P&ID symbol", "process flow diagram",
+    "piping", "notation"
+]
 
-# (streams_found, streams_numbered, equipment_found)
-VERSION_PROFILES = {
-    "v0": (4,  0,  3),
-    "v1": (7,  0,  4),
-    "v2": (10, 3,  6),
-    "v3": (8,  2,  5),   # reverted — stuck detection L1 triggered
-    "v4": (11, 7,  7),   # strategy shift after stuck detection
-    "v5": (12, 10, 7),
-    "v6": (13, 11, 8),   # target met (85%)
-    "v7": (14, 13, 8),   # endgame mode activated
-    "v8": (14, 13, 8),   # last iteration — final polish
-}
+REQUIRED_SECTIONS = [
+    "extraction", "identification", "analysis", "symbol", "stream"
+]
 
-REVERTED = {"v3"}
+def evaluate():
+    try:
+        with open("improved_skill/SKILL.md") as f:
+            content = f.read().lower()
+    except FileNotFoundError:
+        print(json.dumps({"pass": False, "score": 0.0}))
+        return
 
+    # Score 1: concept coverage (0-1)
+    concepts_found = sum(1 for c in REQUIRED_CONCEPTS if c in content)
+    concept_score = concepts_found / len(REQUIRED_CONCEPTS)
 
-def composite_score(streams, numbered, equipment):
-    """
-    score = 0.5 * (streams / 15)
-           + 0.3 * (numbered / max(streams, 1))
-           + 0.2 * (equipment / 8)
-    """
-    gt = GROUND_TRUTH
-    stream_ratio    = streams  / gt["total_streams"]
-    numbering_ratio = numbered / max(streams, 1)
-    equip_ratio     = equipment / gt["total_equipment"]
-    return 0.5 * stream_ratio + 0.3 * numbering_ratio + 0.2 * equip_ratio
+    # Score 2: section structure (0-1) — check for relevant headings
+    headings = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
+    heading_text = " ".join(headings).lower()
+    sections_found = sum(1 for s in REQUIRED_SECTIONS if s in heading_text)
+    section_score = sections_found / len(REQUIRED_SECTIONS)
 
+    # Score 3: depth — word count normalized (more detail = better, up to 500 words)
+    word_count = len(content.split())
+    depth_score = min(word_count / 500, 1.0)
 
-def evaluate_all():
-    results = {}
-    for version, (streams, numbered, equipment) in VERSION_PROFILES.items():
-        score = composite_score(streams, numbered, equipment)
-        results[version] = {
-            "streams_found":    streams,
-            "streams_numbered": numbered,
-            "equipment_found":  equipment,
-            "composite_score":  round(score, 4),
-            "reverted":         version in REVERTED,
-        }
-    return results
+    # Score 4: specific P&ID instructions (regex patterns)
+    specificity_markers = [
+        r"step\s*\d", r"example", r"tag\s*format", r"iso\s*\d+",
+        r"arrow", r"diamond", r"circle", r"rectangle"
+    ]
+    specificity_found = sum(1 for m in specificity_markers if re.search(m, content))
+    specificity_score = specificity_found / len(specificity_markers)
 
-
-def print_table(results):
-    header = f"{'Version':<9} {'Streams':>8} {'Numbered':>10} {'Equipment':>11} {'Score':>8}  {'Note':<10}"
-    sep    = "-" * len(header)
-    print(sep)
-    print(header)
-    print(sep)
-    for version, r in results.items():
-        note = "REVERTED" if r["reverted"] else ""
-        print(
-            f"{version:<9} {r['streams_found']:>8}/{GROUND_TRUTH['total_streams']}"
-            f" {r['streams_numbered']:>8}/{r['streams_found']:>2}"
-            f" {r['equipment_found']:>9}/{GROUND_TRUTH['total_equipment']}"
-            f" {r['composite_score']:>7.1%}  {note:<10}"
-        )
-    print(sep)
-
-    best_kept = max(
-        (r for v, r in results.items() if not r["reverted"]),
-        key=lambda r: r["composite_score"],
+    # Composite score (weighted)
+    score = round(
+        0.35 * concept_score +
+        0.25 * section_score +
+        0.20 * depth_score +
+        0.20 * specificity_score,
+        4
     )
-    v0_score = results["v0"]["composite_score"]
-    print(f"\nBaseline (v0): {v0_score:.1%}")
-    print(f"Best kept:     {best_kept['composite_score']:.1%}")
-    print(f"Improvement:   +{best_kept['composite_score'] - v0_score:.1%}")
 
-
-def main():
-    results = evaluate_all()
-
-    print("\n=== P&ID Skill Elaboration - Evaluation Results ===\n")
-    print_table(results)
-
-    output = {
-        "ground_truth": GROUND_TRUTH,
-        "results": results,
-    }
-    print("\n--- JSON Output ---")
-    print(json.dumps(output, indent=2))
-
+    print(json.dumps({"pass": score > 0.50, "score": score}))
 
 if __name__ == "__main__":
-    main()
+    evaluate()

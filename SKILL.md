@@ -199,14 +199,7 @@ The skill produces three files:
 
 **`final_report.md` (generated at end):** Structured summary following the template in `assets/report_template.md`. Contains: Executive Summary, Best Result with exact configuration, Iteration Summary table, Key Findings, Failed Approaches, and Recommendations for further work.
 
-**`results.png` (generated at end):** Publication-quality visualization of the research results. This chart MUST use the `/scientific-visualization` skill if available (call `rcparams()` from `style_presets.py` before any plotting). Follow these standards:
-
-- **Two-panel layout:** Panel A shows metric convergence over iterations (kept vs reverted, best-so-far envelope, target line). Panel B shows the domain-specific result (prediction vs data, before/after comparison, etc.). Label panels with bold A, B letters.
-- **White background, journal-ready:** No dark themes. Use Pretendard/Arial font, inward ticks, minor ticks visible. The figure should be printable in a journal manuscript.
-- **Colorblind-friendly palette:** Use Okabe-Ito colors — blue (#0072B2) for kept, vermillion (#D55E00) for reverted, green (#009E73) for best-so-far, orange (#E69F00) for target line.
-- **Legend:** Black border, `framealpha=1`, text color must match the corresponding data series color.
-- **Annotated:** Label baseline value, best result, and target line.
-- **DPI > 500:** Save at 600 DPI. Export both PNG and PDF.
+**`results.png` (generated at end):** Publication-quality visualization. Every `visualize.py` MUST call `rcparams()` from the embedded `scripts/style_presets.py` before any plotting. Read `references/visualization-guide.md` for the full 7-rule specification. Key requirements: white background, Okabe-Ito palette, DPI 600, no titles, legend text color matches data color, two-panel layout (A: convergence, B: domain result).
 
 ## Safety & Guardrails
 

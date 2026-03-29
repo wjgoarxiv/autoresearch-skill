@@ -1,274 +1,212 @@
+#!/usr/bin/env python3
 """
 Visualization for skill-elaboration example.
 
-Generates a 2x2 figure summarising how each iteration of the improved
-/pdf skill performed on P&ID stream identification.
+Two-panel figure:
+  A — Composite score convergence across iterations (from TSV)
+  B — Score component breakdown (concept coverage, section structure, depth, specificity)
 """
 
-import numpy as np
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
+import matplotlib.ticker as ticker
+import numpy as np
+import re
+import csv
 from matplotlib import rcParams, font_manager
+from matplotlib.patches import Patch
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# rcParams (project style)
+# rcParams — white background, publication style
 # ---------------------------------------------------------------------------
-rcParams['figure.figsize'] = 5, 4
-rcParams['font.family'] = 'sans-serif'
-available_fonts = set([f.name for f in font_manager.fontManager.ttflist])
-if 'Pretendard' in available_fonts:
-    rcParams['font.sans-serif'] = ['Pretendard']
-elif 'Arial' in available_fonts:
-    rcParams['font.sans-serif'] = ['Arial']
-rcParams['axes.labelpad'] = 8
-rcParams['xtick.major.pad'] = 7
-rcParams['ytick.major.pad'] = 7
-rcParams['xtick.minor.visible'] = True
-rcParams['ytick.minor.visible'] = True
-rcParams['xtick.major.width'] = 1
-rcParams['ytick.major.width'] = 1
-rcParams['xtick.minor.width'] = 0.5
-rcParams['ytick.minor.width'] = 0.5
-rcParams['xtick.major.size'] = 5
-rcParams['ytick.major.size'] = 5
-rcParams['xtick.minor.size'] = 3
-rcParams['ytick.minor.size'] = 3
-rcParams['xtick.color'] = 'black'
-rcParams['ytick.color'] = 'black'
-rcParams['font.size'] = 14
-rcParams['axes.titlepad'] = 10
-rcParams['axes.titleweight'] = 'normal'
-rcParams['axes.titlesize'] = 18
-rcParams['axes.labelweight'] = 'normal'
-rcParams['xtick.labelsize'] = 12
-rcParams['ytick.labelsize'] = 12
-rcParams['axes.labelsize'] = 16
-rcParams['xtick.direction'] = 'in'
-rcParams['ytick.direction'] = 'in'
+rcParams["figure.facecolor"] = "white"
+rcParams["axes.facecolor"] = "white"
+rcParams["savefig.facecolor"] = "white"
+rcParams["font.family"] = "sans-serif"
+_available = {f.name for f in font_manager.fontManager.ttflist}
+for _candidate in ["Arial", "Helvetica", "DejaVu Sans"]:
+    if _candidate in _available:
+        rcParams["font.sans-serif"] = [_candidate]
+        break
+rcParams["font.size"] = 12
+rcParams["axes.titlesize"] = 14
+rcParams["axes.titleweight"] = "bold"
+rcParams["axes.labelsize"] = 12
+rcParams["axes.labelweight"] = "normal"
+rcParams["axes.titlepad"] = 10
+rcParams["axes.labelpad"] = 6
+rcParams["xtick.labelsize"] = 10
+rcParams["ytick.labelsize"] = 10
+rcParams["xtick.direction"] = "in"
+rcParams["ytick.direction"] = "in"
+rcParams["xtick.major.size"] = 4
+rcParams["ytick.major.size"] = 4
+rcParams["xtick.minor.size"] = 2
+rcParams["ytick.minor.size"] = 2
+rcParams["xtick.minor.visible"] = True
+rcParams["ytick.minor.visible"] = True
+rcParams["axes.spines.top"] = False
+rcParams["axes.spines.right"] = False
+rcParams["legend.framealpha"] = 0.9
+rcParams["legend.fontsize"] = 9
 
 # ---------------------------------------------------------------------------
-# Palette
+# Okabe-Ito palette (colorblind-safe)
 # ---------------------------------------------------------------------------
-BLUE   = "#3274A1"
-RED    = "#C03D3E"
-GREEN  = "#2CA02C"
-GOLD   = "#D4A017"
-ORANGE = "#E67E22"
+OI_BLUE       = "#0072B2"
+OI_ORANGE     = "#E69F00"
+OI_GREEN      = "#009E73"
+OI_VERMILLION = "#D55E00"
+OI_SKY        = "#56B4E9"
+OI_PURPLE     = "#CC79A7"
 
 TARGET = 0.85
 
 # ---------------------------------------------------------------------------
-# Data
+# Evaluator components (mirrors evaluate.py logic)
 # ---------------------------------------------------------------------------
-VERSIONS = ["v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8"]
-REVERTED = {"v3"}
+REQUIRED_CONCEPTS = [
+    "process stream", "flow direction", "equipment tag",
+    "valve", "pump", "heat exchanger", "vessel", "tank",
+    "instrument", "control loop", "line number",
+    "P&ID symbol", "process flow diagram",
+    "piping", "notation"
+]
+REQUIRED_SECTIONS = [
+    "extraction", "identification", "analysis", "symbol", "stream"
+]
+SPECIFICITY_MARKERS = [
+    r"step\s*\d", r"example", r"tag\s*format", r"iso\s*\d+",
+    r"arrow", r"diamond", r"circle", r"rectangle"
+]
 
-# (streams_found, streams_numbered, equipment_found)
-PROFILES = {
-    "v0": (4,  0,  3),
-    "v1": (7,  0,  4),
-    "v2": (10, 3,  6),
-    "v3": (8,  2,  5),   # reverted — stuck detection L1
-    "v4": (11, 7,  7),
-    "v5": (12, 10, 7),
-    "v6": (13, 11, 8),   # target met
-    "v7": (14, 13, 8),   # endgame mode
-    "v8": (14, 13, 8),   # last iteration — final polish
-}
+def compute_components(filepath):
+    """Compute the 4 sub-scores from a SKILL.md file."""
+    with open(filepath) as f:
+        content = f.read().lower()
+    concepts = sum(1 for c in REQUIRED_CONCEPTS if c in content) / len(REQUIRED_CONCEPTS)
+    headings = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
+    heading_text = " ".join(headings).lower()
+    sections = sum(1 for s in REQUIRED_SECTIONS if s in heading_text) / len(REQUIRED_SECTIONS)
+    depth = min(len(content.split()) / 500, 1.0)
+    specificity = sum(1 for m in SPECIFICITY_MARKERS if re.search(m, content)) / len(SPECIFICITY_MARKERS)
+    return concepts, sections, depth, specificity
 
-TOTAL_STREAMS   = 15
-TOTAL_EQUIPMENT = 8
+# ---------------------------------------------------------------------------
+# Load data from TSV
+# ---------------------------------------------------------------------------
+tsv_path = Path(__file__).parent / "autoresearch-results.tsv"
+iterations = []
+scores = []
+statuses = []
+descriptions = []
 
+with open(tsv_path) as f:
+    reader = csv.DictReader(f, delimiter='\t')
+    for row in reader:
+        iterations.append(int(row['iteration']))
+        scores.append(float(row['metric_value']))
+        statuses.append(row['status'].strip())
+        descriptions.append(row['description'].strip())
 
-def composite(streams, numbered, equipment):
-    return (
-        0.5 * streams / TOTAL_STREAMS
-        + 0.3 * numbered / max(streams, 1)
-        + 0.2 * equipment / TOTAL_EQUIPMENT
-    )
+labels = [f"v{i}" for i in iterations]
+reverted = [s == "reverted" for s in statuses]
+x = np.arange(len(iterations))
 
+# ---------------------------------------------------------------------------
+# Compute component breakdown for current improved skill
+# ---------------------------------------------------------------------------
+skill_path = Path(__file__).parent / "improved_skill" / "SKILL.md"
+concepts_score, sections_score, depth_score, specificity_score = compute_components(skill_path)
 
-scores = [composite(*PROFILES[v]) for v in VERSIONS]
-
-# Component contributions (not normalised — raw sub-scores for stacking)
-comp_stream    = [0.5 * PROFILES[v][0] / TOTAL_STREAMS          for v in VERSIONS]
-comp_numbering = [0.3 * PROFILES[v][1] / max(PROFILES[v][0], 1) for v in VERSIONS]
-comp_equip     = [0.2 * PROFILES[v][2] / TOTAL_EQUIPMENT        for v in VERSIONS]
-
-# Best-so-far trajectory (skip reverted versions)
-best_so_far = []
-running_best = 0.0
-for v, s in zip(VERSIONS, scores):
-    if v not in REVERTED:
-        running_best = max(running_best, s)
-    best_so_far.append(running_best)
+# Also compute for original
+orig_path = Path(__file__).parent / "original_skill" / "SKILL.md"
+orig_concepts, orig_sections, orig_depth, orig_specificity = compute_components(orig_path)
 
 # ---------------------------------------------------------------------------
 # Figure
 # ---------------------------------------------------------------------------
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-fig.patch.set_facecolor("white")
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+fig.suptitle(
+    "Skill Elaboration: P&ID Diagram Analysis",
+    fontsize=15, fontweight="bold", y=1.01,
+)
 
-x = np.arange(len(VERSIONS))
+# -- Panel A: Composite score convergence ------------------------------------
+ax_a = axes[0]
+ax_a.text(-0.12, 1.06, "A", transform=ax_a.transAxes,
+          fontsize=16, fontweight="bold", va="top")
 
-# ------------------------------------------------------------------
-# Chart 1 – Composite score bar chart
-# ------------------------------------------------------------------
-ax1 = axes[0, 0]
-ax1.set_facecolor("white")
+bar_colors = [OI_VERMILLION if r else OI_BLUE for r in reverted]
+valid_scores = [s * 100 for s in scores]
+bars = ax_a.bar(x, valid_scores, color=bar_colors,
+                width=0.6, zorder=3, edgecolor="white", linewidth=0.5)
 
-bar_colors = [RED if v in REVERTED else BLUE for v in VERSIONS]
-bars = ax1.bar(x, [s * 100 for s in scores], color=bar_colors,
-               width=0.6, zorder=3)
+ax_a.axhline(TARGET * 100, color=OI_ORANGE, linestyle="--",
+             linewidth=1.5, label=f"Target {int(TARGET*100)}%", zorder=4)
 
-ax1.axhline(TARGET * 100, color=GOLD, linestyle="--", linewidth=1.5,
-            label=f"Target {int(TARGET*100)}%", zorder=4)
-
-for bar, s in zip(bars, scores):
-    ax1.text(
+for bar, sc in zip(bars, scores):
+    ax_a.text(
         bar.get_x() + bar.get_width() / 2,
-        bar.get_height() + 1.0,
-        f"{s:.1%}",
-        ha="center", va="bottom", fontsize=10,
+        bar.get_height() + 1.2,
+        f"{sc*100:.1f}%",
+        ha="center", va="bottom", fontsize=9,
     )
 
-ax1.set_xticks(x)
-ax1.set_xticklabels(VERSIONS)
-ax1.set_ylabel("Composite Score (%)")
-ax1.set_title("Composite Score by Iteration")
-ax1.set_ylim(0, 105)
-ax1.set_xlim(-0.5, len(VERSIONS) - 0.5)
-
-kept_patch    = mpatches.Patch(color=BLUE, label="Kept")
-reverted_patch = mpatches.Patch(color=RED,  label="Reverted")
-target_line   = plt.Line2D([0], [0], color=GOLD, linestyle="--",
-                            linewidth=1.5, label=f"Target {int(TARGET*100)}%")
-ax1.legend(handles=[kept_patch, reverted_patch, target_line],
-           fontsize=10, framealpha=0.9)
-
-# ------------------------------------------------------------------
-# Chart 2 – Score trajectory
-# ------------------------------------------------------------------
-ax2 = axes[0, 1]
-ax2.set_facecolor("white")
-
-ax2.plot(x, [s * 100 for s in scores], color=BLUE, marker="o",
-         linewidth=1.8, markersize=6, zorder=3, label="Iteration score")
-ax2.plot(x, [s * 100 for s in best_so_far], color=GREEN, marker="s",
-         linewidth=1.8, markersize=5, linestyle="--", zorder=3,
-         label="Best so far")
-ax2.axhline(TARGET * 100, color=GOLD, linestyle="--", linewidth=1.5,
-            label=f"Target {int(TARGET*100)}%", zorder=2)
-
-# Annotations
-v3_idx = VERSIONS.index("v3")
-ax2.annotate(
-    "REVERTED",
-    xy=(v3_idx, scores[v3_idx] * 100),
-    xytext=(v3_idx + 0.4, scores[v3_idx] * 100 + 8),
-    arrowprops=dict(arrowstyle="->", color=RED, lw=1.2),
-    color=RED, fontsize=9,
-)
-
-v6_idx = VERSIONS.index("v6")
-ax2.annotate(
-    "Target met!",
-    xy=(v6_idx, scores[v6_idx] * 100),
-    xytext=(v6_idx - 1.1, scores[v6_idx] * 100 + 5),
-    arrowprops=dict(arrowstyle="->", color=GREEN, lw=1.2),
-    color=GREEN, fontsize=9,
-)
-
-v8_idx = VERSIONS.index("v8")
-ax2.annotate(
-    f"Best: {scores[v8_idx]:.1%}",
-    xy=(v8_idx, scores[v8_idx] * 100),
-    xytext=(v8_idx - 2.0, scores[v8_idx] * 100 + 4),
-    arrowprops=dict(arrowstyle="->", color=BLUE, lw=1.2),
-    color=BLUE, fontsize=9,
-)
-
-ax2.set_xticks(x)
-ax2.set_xticklabels(VERSIONS)
-ax2.set_ylabel("Composite Score (%)")
-ax2.set_title("Score Trajectory")
-ax2.set_ylim(0, 105)
-ax2.set_xlim(-0.5, len(VERSIONS) - 0.5)
-ax2.legend(fontsize=10, framealpha=0.9)
-
-# ------------------------------------------------------------------
-# Chart 3 – Component breakdown stacked bar
-# ------------------------------------------------------------------
-ax3 = axes[1, 0]
-ax3.set_facecolor("white")
-
-b1 = ax3.bar(x, [v * 100 for v in comp_stream],
-             color=BLUE, width=0.6, label="Stream Detection", zorder=3)
-b2 = ax3.bar(x, [v * 100 for v in comp_numbering],
-             bottom=[v * 100 for v in comp_stream],
-             color=ORANGE, width=0.6, label="Stream Numbering", zorder=3)
-b3 = ax3.bar(x, [v * 100 for v in comp_equip],
-             bottom=[(a + b) * 100 for a, b in zip(comp_stream, comp_numbering)],
-             color=GREEN, width=0.6, label="Equipment ID", zorder=3)
-
-ax3.axhline(TARGET * 100, color=GOLD, linestyle="--", linewidth=1.5,
-            label=f"Target {int(TARGET*100)}%", zorder=4)
-
-ax3.set_xticks(x)
-ax3.set_xticklabels(VERSIONS)
-ax3.set_ylabel("Score Contribution (%)")
-ax3.set_title("Component Breakdown")
-ax3.set_ylim(0, 105)
-ax3.set_xlim(-0.5, len(VERSIONS) - 0.5)
-ax3.legend(fontsize=9, framealpha=0.9)
-
-# ------------------------------------------------------------------
-# Chart 4 – Original vs Improved grouped bar
-# ------------------------------------------------------------------
-ax4 = axes[1, 1]
-ax4.set_facecolor("white")
-
-categories  = ["Streams\n(x/15)", "Numbering\n(x/14)", "Equipment\n(x/8)"]
-v0_streams,  v0_numbered,  v0_equip  = PROFILES["v0"]
-v8_streams,  v8_numbered,  v8_equip  = PROFILES["v8"]
-
-original = [
-    v0_streams  / TOTAL_STREAMS * 100,
-    v0_numbered / 14            * 100,
-    v0_equip    / TOTAL_EQUIPMENT * 100,
+legend_elements = [
+    Patch(facecolor=OI_BLUE,       label="Kept"),
+    Patch(facecolor=OI_VERMILLION,  label="Reverted"),
+    plt.Line2D([0], [0], color=OI_ORANGE, linestyle="--",
+               linewidth=1.5, label=f"Target {int(TARGET*100)}%"),
 ]
-improved = [
-    v8_streams  / TOTAL_STREAMS * 100,
-    v8_numbered / 14            * 100,
-    v8_equip    / TOTAL_EQUIPMENT * 100,
-]
+ax_a.legend(handles=legend_elements, loc="lower right")
+ax_a.set_xticks(x)
+ax_a.set_xticklabels(labels, fontsize=9)
+ax_a.set_ylabel("Composite Score (%)")
+ax_a.set_title("Score Convergence")
+ax_a.set_ylim(0, 110)
+ax_a.yaxis.set_minor_locator(ticker.MultipleLocator(5))
 
-cat_x  = np.arange(len(categories))
-width  = 0.35
+# -- Panel B: Component breakdown (original vs improved) ---------------------
+ax_b = axes[1]
+ax_b.text(-0.12, 1.06, "B", transform=ax_b.transAxes,
+          fontsize=16, fontweight="bold", va="top")
 
-ax4.bar(cat_x - width / 2, original, width, color=RED,   label="Original (v0)", zorder=3)
-ax4.bar(cat_x + width / 2, improved, width, color=GREEN, label="Improved (v8)", zorder=3)
+comp_labels = ["Concepts\n(35%)", "Sections\n(25%)", "Depth\n(20%)", "Specificity\n(20%)"]
+orig_vals = np.array([orig_concepts, orig_sections, orig_depth, orig_specificity]) * 100
+improved_vals = np.array([concepts_score, sections_score, depth_score, specificity_score]) * 100
 
-for i, (o, m) in enumerate(zip(original, improved)):
-    ax4.text(cat_x[i] - width / 2, o + 1.5, f"{o:.0f}%",
-             ha="center", va="bottom", fontsize=9)
-    ax4.text(cat_x[i] + width / 2, m + 1.5, f"{m:.0f}%",
-             ha="center", va="bottom", fontsize=9)
+bx = np.arange(len(comp_labels))
+width = 0.35
 
-ax4.set_xticks(cat_x)
-ax4.set_xticklabels(categories, fontsize=11)
-ax4.set_ylabel("Achievement (%)")
-ax4.set_title("Original vs Improved")
-ax4.set_ylim(0, 120)
-ax4.legend(fontsize=10, framealpha=0.9)
+bars_orig = ax_b.bar(bx - width/2, orig_vals, width, color=OI_SKY,
+                     label="Original", zorder=3, edgecolor="white", linewidth=0.3)
+bars_impr = ax_b.bar(bx + width/2, improved_vals, width, color=OI_GREEN,
+                     label="Improved", zorder=3, edgecolor="white", linewidth=0.3)
 
-# ------------------------------------------------------------------
-# Final layout & save
-# ------------------------------------------------------------------
-plt.tight_layout(pad=2.5)
+for bar, val in zip(bars_orig, orig_vals):
+    if val > 0:
+        ax_b.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1,
+                  f"{val:.0f}%", ha="center", va="bottom", fontsize=8)
+for bar, val in zip(bars_impr, improved_vals):
+    ax_b.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1,
+              f"{val:.0f}%", ha="center", va="bottom", fontsize=8)
 
-from pathlib import Path
-OUTPUT_PATH = str(Path(__file__).parent / "results.png")
-plt.savefig(OUTPUT_PATH, dpi=200, bbox_inches="tight", facecolor="white")
-print(f"Saved: {OUTPUT_PATH}")
+ax_b.set_xticks(bx)
+ax_b.set_xticklabels(comp_labels, fontsize=9)
+ax_b.set_ylabel("Sub-Score (%)")
+ax_b.set_title("Component Breakdown")
+ax_b.set_ylim(0, 120)
+ax_b.yaxis.set_minor_locator(ticker.MultipleLocator(10))
+ax_b.legend(loc="upper right")
+
+# ---------------------------------------------------------------------------
+# Save
+# ---------------------------------------------------------------------------
+plt.tight_layout()
+out = Path(__file__).parent / "results.png"
+plt.savefig(out, dpi=600, bbox_inches="tight", facecolor="white")
+print(f"Saved: {out}")
 plt.close()

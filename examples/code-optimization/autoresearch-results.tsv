@@ -1,0 +1,13 @@
+iteration	metric_value	delta	delta_pct	status	description	evaluator_source	timestamp
+0	2.3991	-	-	baseline	Recursive quicksort with list comprehensions	mechanical	2026-03-29
+1	0.8709	-1.5282	-63.7%	kept	Radix sort (LSD, base 256)	mechanical	2026-03-29
+2	0.5727	-0.2982	-34.2%	kept	Radix sort (LSD, base 65536)	mechanical	2026-03-29
+3	0.4979	-0.0748	-13.1%	kept	Micro-optimized radix (unrolled passes, local vars)	mechanical	2026-03-29
+4	0.6717	+0.1738	+34.9%	reverted	Counting sort (range 0-10M)	mechanical	2026-03-29
+5	0.6967	+0.1988	+39.9%	reverted	array module for count arrays	mechanical	2026-03-29
+6	0.4486	-0.0493	-9.9%	kept	Pre-computed dual histograms in single pass	mechanical	2026-03-29
+7	0.7205	+0.2719	+60.6%	reverted	Radix base 2048 (11-bit, 3 passes)	mechanical	2026-03-29
+8	0.4226	-0.0260	-5.8%	kept	sorted()-based radix (2 passes with C-level Timsort)	mechanical	2026-03-29
+9	0.1920	-0.2306	-54.6%	kept	Direct sorted() -- C Timsort	mechanical	2026-03-29
+10	0.1847	-0.0073	-3.8%	kept	list.sort() in-place with copy	mechanical	2026-03-29
+11	0.2494	+0.0647	+35.0%	reverted	Hybrid bucket(256)+Timsort	mechanical	2026-03-29

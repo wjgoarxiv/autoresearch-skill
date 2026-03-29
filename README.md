@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/github/stars/wjgoarxiv/autoresearch-skill?style=social" />
   <img src="https://img.shields.io/badge/license-MIT-blue" />
   <img src="https://img.shields.io/badge/python-3.8+-green" />
-  <img src="https://img.shields.io/badge/skill-Claude%20Code-blueviolet" />
+  <img src="https://img.shields.io/badge/skill-Claude%20Code%20%7C%20Codex%20%7C%20OpenCode%20%7C%20Gemini-blueviolet" />
 </p>
 
 ---
@@ -20,11 +20,12 @@
 
 | | Without autoresearch-skill | With autoresearch-skill |
 |:---:|:---:|:---:|
-| **Code Optimization** | ![](./examples/comparison_figures/code_without.png) | ![](./examples/comparison_figures/code_with.png) |
-| **Literature Review** | ![](./examples/comparison_figures/lit_without.png) | ![](./examples/comparison_figures/lit_with.png) |
-| **Prompt Optimization** | ![](./examples/comparison_figures/prompt_without.png) | ![](./examples/comparison_figures/prompt_with.png) |
-| **Skill Elaboration** | ![](./examples/comparison_figures/skill_without.png) | ![](./examples/comparison_figures/skill_with.png) |
-| **Function Fitting** | Baseline: `y = x` (RMSE 2.11) | 4-freq Fourier model (RMSE 0.034), 18 iterations with mechanical evaluator |
+| | Example | Result | Iterations | Evaluator |
+|:---:|:---|:---|:---:|:---:|
+| 1 | **Code Optimization** — Sort 1M integers faster | 2.40s → 0.16s (-93%) | 11 | `benchmark.py` |
+| 2 | **Literature Review** — Exercise timing papers | 0/8 → 8/8 categories, 25 papers | 4 | Agent (Tier 2) |
+| 3 | **Skill Elaboration** — Improve P&ID analysis skill | 0.28 → 0.98 composite | 7 | `evaluate.py` |
+| 4 | **Function Fitting** — Discover hidden math function | RMSE 2.11 → 0.034 | 18 | `evaluate.py` |
 
 > [!NOTE]
 > An LLM skill that turns natural-language research goals into autonomous experiment-evaluate-iterate loops -- inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). Write a `research.md`, and the agent handles hypothesis generation, experimentation, evaluation, and iteration. Works with Claude Code, Codex CLI, and Gemini CLI.
@@ -44,7 +45,7 @@
 
 Other autoresearch implementations provide the loop concept. This repo provides the **complete toolkit**:
 
-- **5 worked examples** with real measured data -- not templates, not placeholders
+- **4 worked examples** with real measured data -- not templates, not placeholders
 - **Visual evidence** -- before/after charts, optimization trajectories, error heatmaps
 - **Multi-agent compatible** -- works with Claude Code, Codex CLI, and Gemini CLI
 - **Copy-paste install** -- one block, paste into your LLM chat, done
@@ -89,6 +90,7 @@ ln -s "$(pwd)" ~/.claude/skills/autoresearch-skill
 |------|-------------|-----------------|
 | **Claude Code** | `~/.claude/skills/autoresearch-skill/` | See above |
 | **Codex CLI** | `~/.codex/skills/autoresearch-skill/` | `mkdir -p ~/.codex/skills && ln -s "$(pwd)" ~/.codex/skills/autoresearch-skill` |
+| **OpenCode** | `~/.config/opencode/skills/autoresearch-skill/` | `mkdir -p ~/.config/opencode/skills && ln -s "$(pwd)" ~/.config/opencode/skills/autoresearch-skill` |
 | **Gemini CLI** | `~/.gemini/skills/autoresearch-skill/` | `mkdir -p ~/.gemini/skills && ln -s "$(pwd)" ~/.gemini/skills/autoresearch-skill` |
 
 ## Installation
@@ -112,35 +114,29 @@ The skill is automatically discovered when you mention "autoresearch" or "resear
 
 ## Usage
 
-### 1. Prompt Optimization
-
-```
-My customer support classifier prompt scores 68% accuracy.
-Use auto-research to optimize it above 90% on these 50 test cases.
-```
-
-### 2. Literature Review
+### 1. Literature Review
 
 ```
 Research the latest advances in "LLM agents for scientific discovery".
 Find and synthesize at least 15 papers from 2024-2026.
 ```
 
-### 3. Code Optimization
+### 2. Code Optimization
 
 ```
 My sort function takes 2.3s on 1M items. Use auto-research to make it faster.
 Target: under 0.5 seconds. Pure Python only, no C extensions.
 ```
 
-### 4. Configuration Tuning
+### 3. Function Fitting
 
 ```
-Find the optimal webpack config for my project.
-Metric: minimize gzipped bundle size. Constraint: all e2e tests must pass.
+I have data points from an unknown function in train_data.csv.
+Use autoresearch to discover the function. Minimize RMSE below 0.05.
+Here's my evaluate.py that outputs {"pass": true, "score": -0.034}.
 ```
 
-### 5. Scaffold a New Research Project
+### 4. Scaffold a New Research Project
 
 ```bash
 python scripts/init_research.py \
