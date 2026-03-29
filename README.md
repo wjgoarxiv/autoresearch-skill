@@ -90,6 +90,25 @@ ln -s "$(pwd)" ~/.claude/skills/autoresearch-skill
 | **Codex CLI** | `~/.codex/skills/autoresearch-skill/` | `mkdir -p ~/.codex/skills && ln -s "$(pwd)" ~/.codex/skills/autoresearch-skill` |
 | **Gemini CLI** | `~/.gemini/skills/autoresearch-skill/` | `mkdir -p ~/.gemini/skills && ln -s "$(pwd)" ~/.gemini/skills/autoresearch-skill` |
 
+## Installation
+
+Copy this skill into your CLI tool's skills directory:
+
+| Platform | Command |
+|----------|---------|
+| **Claude Code** | `cp -r autoresearch-skill/ ~/.claude/skills/autoresearch-skill/` |
+| **Codex CLI** | `cp -r autoresearch-skill/ ~/.codex/skills/autoresearch-skill/` |
+| **OpenCode** | `cp -r autoresearch-skill/ ~/.config/opencode/skills/autoresearch-skill/` |
+| **Gemini CLI** | `cp -r autoresearch-skill/ ~/.gemini/skills/autoresearch-skill/` |
+
+Or clone directly:
+```bash
+git clone https://github.com/wjgoarxiv/autoresearch-skill.git
+cp -r autoresearch-skill/ ~/.claude/skills/   # adjust path for your platform
+```
+
+The skill is automatically discovered when you mention "autoresearch" or "research.md" in your prompt.
+
 ## Usage
 
 ### 1. Prompt Optimization
@@ -130,6 +149,31 @@ python scripts/init_research.py \
   --target "< 50" \
   --output ./db-research/
 ```
+
+## Overnight Runs
+
+To run autoresearch overnight (or for days), use the universal loop script:
+
+```bash
+# 1. Set up your research project
+python scripts/init_research.py --goal "..." --metric "..." --direction maximize --output ./my-research/
+
+# 2. Start the overnight loop (pick one)
+
+# Option A: Keep terminal open (simplest)
+bash scripts/autoresearch-loop.sh ./my-research/
+
+# Option B: Background without tmux
+nohup bash scripts/autoresearch-loop.sh ./my-research/ > autoresearch.log 2>&1 &
+
+# Option C: Background with tmux (best experience)
+tmux new-session -d -s research 'bash scripts/autoresearch-loop.sh ./my-research/'
+
+# 3. Check progress anytime
+bash scripts/check_progress.sh ./my-research/
+```
+
+The script auto-detects your CLI tool and handles session restarts, completion detection, and safety limits. Works with Claude Code, Codex CLI, OpenCode, and Gemini CLI. No dependencies beyond bash.
 
 ## How It Works
 

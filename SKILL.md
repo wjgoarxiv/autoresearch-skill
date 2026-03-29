@@ -271,27 +271,48 @@ When operating with a fixed `max_iterations` budget:
 
 ## Persistence: Overnight & Multi-Day Runs
 
-The autonomous loop runs within a single LLM session. For runs that should survive session boundaries:
+The autonomous loop runs within a single LLM session. For runs that should survive session boundaries, use the universal loop script:
 
-**Option 1 — `/loop` (session-scoped, simplest):**
+**Quick start (any platform):**
 ```
-/loop 6m "Continue the autoresearch loop in ./my-research/. Read research.md and research_log.md, pick up from the last completed iteration, and run the next experiment."
-```
-This re-invokes the skill every 6 minutes. Each invocation reads the file-based state (research.md History table + research_log.md) and continues where the last session left off. The loop persists as long as the terminal session is open.
+# Option A: Foreground (simplest — keep terminal open)
+bash scripts/autoresearch-loop.sh ./my-research/
 
-**Option 2 — `CronCreate` (cloud-scheduled, survives session exit):**
-```
-Use CronCreate to schedule: "Continue autoresearch in /path/to/my-research/" every 30 minutes.
-```
-This launches a fresh Claude Code session on schedule. Each session reads research.md, runs 1-3 iterations, and exits. The cron job re-launches it on the next schedule. Runs can persist for days.
+# Option B: Background with nohup (no tmux needed)
+nohup bash scripts/autoresearch-loop.sh ./my-research/ > autoresearch.log 2>&1 &
+tail -f autoresearch.log   # to monitor
+# To stop: kill %1 or kill $(cat .autoresearch-loop.pid)
 
-**Option 3 — `/ralph` wrapper (self-referential loop):**
-```
-/ralph "Run autoresearch on ./my-research/ until the target metric is met. Read research.md for the goal and current state."
-```
-Ralph's stop-hook re-feeds the prompt after each session exit, creating a persistent loop. The completion promise should be the target metric value.
+# Option C: Background with tmux (best experience, requires tmux)
+tmux new-session -d -s research 'bash scripts/autoresearch-loop.sh ./my-research/'
+tmux attach -t research    # to monitor
+Ctrl-b d                   # to detach
 
-**Why this works:** All state lives in files (`research.md`, `research_log.md`, `autoresearch-results.tsv`). Any new session can read these files and resume from the last completed iteration. No in-memory state is required.
+# Check progress from any terminal
+bash scripts/check_progress.sh ./my-research/
+```
+
+The script auto-detects your CLI tool (Claude Code, Codex, OpenCode, Gemini) and re-invokes it with a continuation prompt between sessions. It checks file-based completion signals (`final_report.md`, TSV iteration count, target achievement) before each invocation. It writes its PID to `.autoresearch-loop.pid` for easy process management.
+
+**Options:**
+- `--cli <name>` — Force a specific CLI (claude, codex, opencode, gemini)
+- `--interval <seconds>` — Sleep between invocations (default: 360)
+- `--max-invocations <N>` — Safety cap (default: 50)
+- `--dry-run` — Print the command without executing
+
+**Why this works:** All state lives in files (`research.md`, `research_log.md`, `autoresearch-results.tsv`). Any new session reads these files and resumes from the last completed iteration. No in-memory state required.
+
+<details>
+<summary>Platform-specific alternatives (Claude Code)</summary>
+
+If you're using Claude Code, these native options are also available:
+
+- **`/loop 6m "Continue autoresearch in ./my-research/..."`** — session-scoped recurring execution
+- **`CronCreate`** — cloud-scheduled persistence that survives session exit
+- **`/ralph "Run autoresearch on ./my-research/ until target met"`** — self-referential loop via stop-hook
+
+These provide tighter integration but only work within the Claude Code ecosystem.
+</details>
 
 ## Relationship to Other Skills
 

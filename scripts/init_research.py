@@ -153,6 +153,7 @@ def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations
     print(f"  2. Add context (papers, docs, code) under 'Context & References'.")
     print(f"  3. Run your baseline experiment and record it in the History table.")
     print(f"  4. Start iterating: modify → measure → log → repeat.")
+    print(f"  5. For overnight runs: bash scripts/autoresearch-loop.sh {output.resolve()}")
 
 
 def main() -> None:
