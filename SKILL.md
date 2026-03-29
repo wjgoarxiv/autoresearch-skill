@@ -40,6 +40,36 @@ Autonomous research loop inspired by Karpathy's autoresearch. Where autoresearch
 
 Think of `max_iterations` as a budget to *spend*, not a limit to *fear*. Using all 20 iterations means you gave the problem your full effort. Stopping at iteration 4 means you gave up.
 
+## Pre-Flight Setup (Mandatory)
+
+Before starting the research loop, the agent MUST ask the user these questions if not already answered in research.md. Do NOT assume — ask.
+
+### Question 1: Overnight Execution
+Ask: "Do you want this research loop to run unattended (overnight)?"
+
+If yes:
+- Set `pause_every: never`
+- Recommend: `bash scripts/autoresearch-loop.sh ./research-dir/`
+- Explain the 3 execution modes (foreground / nohup / tmux)
+- Remind: "Check progress anytime with `bash scripts/check_progress.sh`"
+
+If no:
+- Ask: "How often should I pause for your review?" (every N iterations, or never)
+- Set `pause_every` accordingly
+
+### Question 2: Evaluator Setup
+Ask: "Do you have a script that can automatically measure the success metric? (e.g., `python evaluate.py` that outputs JSON)"
+
+If yes:
+- Record the evaluator command in research.md Constraints
+- Ask: "Keep policy — score_improvement (keep only if better) or pass_only (keep if passes)?"
+
+If no:
+- Agent will evaluate manually using available tools
+- Note this in research.md: `Evaluator: _(none — agent judges manually)_`
+
+**IMPORTANT:** Do NOT start Stage 1 of the first iteration until pre-flight questions are answered. If research.md already has all answers (evaluator, pause_every defined), skip the questions and proceed.
+
 ## When to Use This Skill
 
 - **Prompt optimization:** Iteratively improve system prompts against test cases
