@@ -93,6 +93,7 @@ done
 
 [[ -n "$research_dir" ]] || die "research_dir is required as the first positional argument"
 [[ -d "$research_dir" ]] || die "research_dir does not exist or is not a directory: $research_dir"
+[[ -f "${research_dir}/research.md" ]] || die "No research.md found in ${research_dir}. Run init_research.py first."
 
 # Resolve to absolute path
 research_dir="$(cd "$research_dir" && pwd)"

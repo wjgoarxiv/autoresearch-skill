@@ -46,7 +46,7 @@ if [[ -f "$TSV_FILE" ]]; then
     # Skip header row (first line), collect data lines portably (bash 3.2 safe)
     data_count=0
     best_score=""
-    while IFS=$'\t' read -r f1 f2 f3 f4 f5 f6 rest; do
+    while IFS=$'\t' read -r f1 f2 f3 f4 f5 f6 f7 rest; do
         [[ -z "$f1" ]] && continue
         data_count=$(( data_count + 1 ))
         cur_iter="$f1"

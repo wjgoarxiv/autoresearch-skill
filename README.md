@@ -48,7 +48,7 @@ Other autoresearch implementations provide the loop concept. This repo provides 
 - **Multi-agent compatible** -- works with Claude Code, Codex CLI, and Gemini CLI
 - **Copy-paste install** -- one block, paste into your LLM chat, done
 - **Scaffolding tool** -- `init_research.py` creates a ready-to-run research project in seconds
-- **Core principles** -- 7 formalized Karpathy principles with practical mapping to `research.md`
+- **Core principles** -- 8 formalized Karpathy principles with practical mapping to `research.md`
 - **Stuck detection** -- automatic strategy shifts when the loop plateaus
 - **Endgame strategy** -- switches from explore to exploit when iterations are running out
 - **TSV logging** -- machine-readable `autoresearch-results.tsv` for CI integration and analysis

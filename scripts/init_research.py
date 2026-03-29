@@ -10,6 +10,7 @@ import argparse
 import textwrap
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 RESEARCH_TEMPLATE = """\
 # Research: {title}
@@ -57,8 +58,8 @@ LOG_TEMPLATE = """\
 
 """
 
-TSV_HEADER = "iteration\tmetric_value\tdelta\tdelta_pct\tstatus\tdescription\ttimestamp\n"
-TSV_BASELINE = "0\tTBD\t-\t-\tbaseline\tInitial state\t{date}\n"
+TSV_HEADER = "iteration\tmetric_value\tdelta\tdelta_pct\tstatus\tdescription\tevaluator_source\ttimestamp\n"
+TSV_BASELINE = "0\tTBD\t-\t-\tbaseline\tInitial state\tagent\t{date}\n"
 
 
 def goal_to_title(goal: str) -> str:
@@ -105,7 +106,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations: int, output: Path,
-             evaluator: str | None = None, keep_policy: str = "score_improvement") -> None:
+             evaluator: Optional[str] = None, keep_policy: str = "score_improvement") -> None:
     date = datetime.now().strftime("%Y-%m-%d")
     title = goal_to_title(goal)
     evaluator_str = f"`{evaluator}`" if evaluator else "_(none — agent judges manually)_"
