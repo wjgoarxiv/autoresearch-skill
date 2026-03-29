@@ -199,15 +199,14 @@ The skill produces three files:
 
 **`final_report.md` (generated at end):** Structured summary following the template in `assets/report_template.md`. Contains: Executive Summary, Best Result with exact configuration, Iteration Summary table, Key Findings, Failed Approaches, and Recommendations for further work.
 
-**`results.png` (generated at end):** Publication-quality visualization of the research results. This chart MUST follow scientific visualization standards:
+**`results.png` (generated at end):** Publication-quality visualization of the research results. This chart MUST use the `/scientific-visualization` skill if available (call `rcparams()` from `style_presets.py` before any plotting). Follow these standards:
 
-- **Two-panel layout:** Top panel shows metric convergence over iterations (kept vs reverted, best-so-far envelope, target line). Bottom panel shows the domain-specific result (prediction vs data, before/after comparison, etc.).
-- **Dark theme:** Dark background (#1a1a2e), bright accent colors for data series, white text, subtle grid.
-- **Annotated:** Label baseline value, best result, target line, and any PIVOT points.
-- **Color coding:** Blue/green for kept iterations, red for reverted, yellow dashed for target threshold.
-- **High resolution:** 200 DPI minimum, figure size at least 12x10 inches.
-
-Each example's `visualize.py` generates this chart. If the `/scientific-visualization` skill is available, use it for the plotting. Otherwise, use matplotlib with the dark theme specified above.
+- **Two-panel layout:** Panel A shows metric convergence over iterations (kept vs reverted, best-so-far envelope, target line). Panel B shows the domain-specific result (prediction vs data, before/after comparison, etc.). Label panels with bold A, B letters.
+- **White background, journal-ready:** No dark themes. Use Pretendard/Arial font, inward ticks, minor ticks visible. The figure should be printable in a journal manuscript.
+- **Colorblind-friendly palette:** Use Okabe-Ito colors — blue (#0072B2) for kept, vermillion (#D55E00) for reverted, green (#009E73) for best-so-far, orange (#E69F00) for target line.
+- **Legend:** Black border, `framealpha=1`, text color must match the corresponding data series color.
+- **Annotated:** Label baseline value, best result, and target line.
+- **DPI > 500:** Save at 600 DPI. Export both PNG and PDF.
 
 ## Safety & Guardrails
 
