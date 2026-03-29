@@ -5,7 +5,7 @@
   <em>Define a goal. Let the agent research, experiment, and iterate -- autonomously.</em>
 </p>
 <p align="center">
-  <a href="#quick-start">Quick Start</a> · <a href="#features">Features</a> · <a href="#usage">Usage</a> · <a href="./README-Ko-KR.md">한국어</a>
+  <a href="#when-to-use">When to Use</a> · <a href="#quick-start">Quick Start</a> · <a href="#features">Features</a> · <a href="#usage">Usage</a> · <a href="./README-Ko-KR.md">한국어</a>
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/stars/wjgoarxiv/autoresearch-skill?style=social" />
@@ -54,6 +54,37 @@ Other autoresearch implementations provide the loop concept. This repo provides 
 - **Stuck detection** -- automatic strategy shifts when the loop plateaus
 - **Endgame strategy** -- switches from explore to exploit when iterations are running out
 - **TSV logging** -- machine-readable `autoresearch-results.tsv` for CI integration and analysis
+
+## When to Use
+
+Most LLM CLI tools already ship with iterative execution modes -- `ralph`, `autopilot`, `/loop`, cron-based scheduling, etc. Those work well for code-centric tasks tied to git, test runners, and build systems. autoresearch-skill targets a different problem shape: **anything with a numeric metric and a search space to explore**, whether or not it involves code.
+
+### autoresearch-skill vs built-in iterative modes
+
+|  | Manual prompting | Built-in modes (ralph, autopilot, team) | autoresearch-skill |
+|:---|:---|:---|:---|
+| **Domain** | Anything, but you drive each cycle | Code projects (git + tests + build) | Any domain with a measurable metric |
+| **Evaluation** | LLM self-reports results | Acceptance criteria, often subjective | Mechanical evaluator: `{"pass": true, "score": 0.94}` |
+| **On plateau** | You decide what to try next | Retry or terminate | 3-level pivot -- switch strategy, then paradigm, then finalize |
+| **Autonomy** | One cycle per human turn | High, but verification gates can pause | Uses full iteration budget without asking |
+| **Overnight runs** | Not practical | Platform-specific (`/loop`, `CronCreate`) | Cross-platform bash script (Claude Code, Codex, Gemini CLI) |
+| **Environment** | Depends on tool | Assumes shell access | 3-tier auto-detection (shell / web-only / text-only) |
+| **Dependencies** | Varies | git, pytest, etc. | Python 3.8+ stdlib only |
+
+### Pick autoresearch-skill when
+
+- You have a **numeric metric** and a script that outputs `{"pass": bool, "score": number}` -- the mechanical evaluator removes LLM judgment from keep/revert decisions
+- The problem is **not a code project** -- simulation parameter sweeps, literature coverage gaps, prompt tuning against test cases, function fitting from data
+- You need **overnight runs across CLI platforms**, not just Claude Code
+- Progress will **plateau**, and you want the agent to pivot strategy instead of stopping
+- You want a **machine-readable audit trail** (TSV + append-only log) of every iteration
+
+### Stick with built-in modes when
+
+- The task is **bug fixes or feature implementation** -- ralph and autopilot understand PRDs, acceptance criteria, and code review workflows
+- Multiple agents need to **work on different subtasks in parallel** -- that's what team mode does
+- There is **no measurable metric** -- autoresearch needs a target to iterate toward
+- **One attempt is enough** -- no iteration loop needed
 
 ## Quick Start
 
