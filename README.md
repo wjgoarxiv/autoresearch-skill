@@ -24,6 +24,7 @@
 | **Literature Review** | ![](./examples/comparison_figures/lit_without.png) | ![](./examples/comparison_figures/lit_with.png) |
 | **Prompt Optimization** | ![](./examples/comparison_figures/prompt_without.png) | ![](./examples/comparison_figures/prompt_with.png) |
 | **Skill Elaboration** | ![](./examples/comparison_figures/skill_without.png) | ![](./examples/comparison_figures/skill_with.png) |
+| **Function Fitting** | Baseline: `y = x` (RMSE 2.11) | 4-freq Fourier model (RMSE 0.034), 18 iterations with mechanical evaluator |
 
 > [!NOTE]
 > An LLM skill that turns natural-language research goals into autonomous experiment-evaluate-iterate loops -- inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). Write a `research.md`, and the agent handles hypothesis generation, experimentation, evaluation, and iteration. Works with Claude Code, Codex CLI, and Gemini CLI.
@@ -43,7 +44,7 @@
 
 Other autoresearch implementations provide the loop concept. This repo provides the **complete toolkit**:
 
-- **4 worked examples** with real measured data -- not templates, not placeholders
+- **5 worked examples** with real measured data -- not templates, not placeholders
 - **Visual evidence** -- before/after charts, optimization trajectories, error heatmaps
 - **Multi-agent compatible** -- works with Claude Code, Codex CLI, and Gemini CLI
 - **Copy-paste install** -- one block, paste into your LLM chat, done

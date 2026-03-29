@@ -30,6 +30,18 @@
       "prompt": "Optimize this config with max 5 iterations.",
       "expected_output": "Respects max_iterations=5, stops at iteration 5 even if target not reached, produces final_report.md noting target was not achieved.",
       "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "I have data points from an unknown function in train_data.csv and test_data.csv. Use autoresearch-skill with the mechanical evaluator (python evaluate.py) to discover the function and minimize RMSE below 0.05. Budget: 25 iterations.",
+      "expected_output": "Reads research.md with evaluator defined, runs iterative loop using mechanical evaluator (JSON output), discovers multi-component function (polynomial + trigonometric), uses score_improvement keep policy, persists through 15+ iterations with PIVOTs, produces final_report.md with best-fit function.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Run autoresearch overnight on ./my-research/ using the loop script. I have Codex CLI installed.",
+      "expected_output": "Recommends: bash scripts/autoresearch-loop.sh ./my-research/ with --cli codex flag, explains 3 execution modes (foreground/nohup/tmux), mentions check_progress.sh for monitoring. Does NOT recommend /loop or CronCreate (Codex-incompatible).",
+      "files": []
     }
   ]
 }
