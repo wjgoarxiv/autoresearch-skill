@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 .omc/
+.omx/
+.sisyphus/
 .DS_Store
 workspace/
 *.egg-info/

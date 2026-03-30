@@ -1,5 +1,0 @@
-## 2026-03-29
-- Chose sibling absolute path `/Users/woojin/Desktop/02_Areas/01_Codes_automation/14_autoresearch-skill-update-opencode-oh-my-opencode` to keep isolation clear and naming aligned with the active plan.
-- Used dedicated branch `plan/update-opencode-oh-my-opencode` derived directly from the plan name to avoid ambiguity during orchestration updates.
-- Task 3: selected `opencode upgrade v1.3.3 --method curl` because the live binary is a standalone file at `/Users/woojin/.opencode/bin/opencode`, matching the official installer layout, while brew/npm/pnpm/bun global checks did not indicate a package-manager-managed install; rollback basis is the pinned installer command for `1.3.3` plus backup dir `/Users/woojin/.config/opencode/backups/pre-update-20260329-011819`.
-- Task 6: selected plain `bunx oh-my-opencode install` for Task 7 because Bun is available locally, the mirrored docs recommend that entrypoint, and adding provider/auth flags would risk redefining the already-curated `oh-my-opencode.json` instead of preserving it.

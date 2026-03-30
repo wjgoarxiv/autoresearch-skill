@@ -1,4 +1,0 @@
-True
-backup_dir=/Users/woojin/.config/opencode/backups/pre-update-20260329-011819
-copied_count=10
-bun.lock=present
