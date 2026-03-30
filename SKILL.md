@@ -112,11 +112,11 @@ Five-stage loop, repeating until the success metric is met or constraints are ex
 
 **Stage 2 -- Hypothesize:** Based on prior results and remaining search space, propose a single specific, testable change. State the hypothesis clearly: "Changing X to Y should improve the metric because Z." Avoid repeating failed approaches unless the context has changed.
 
-**Stage 3 -- Experiment:** Execute the change. Tier 1: run code, modify files, execute benchmarks. Tier 2: search the web, fetch papers, gather data. Tier 3: apply analytical reasoning to user-provided data. Always preserve the ability to revert.
+**Stage 3 -- Experiment:** Execute the change. Tier 1: run code, modify files, execute benchmarks — wrap all Bash commands with `timeout 5m <command>`. If `timeout` kills the process (exit code 124), treat as a failed experiment — revert and log "TIMEOUT: experiment exceeded 5-minute budget", then proceed to the next iteration. Tier 2: search the web, fetch papers, gather data. Tier 3: apply analytical reasoning to user-provided data. Always preserve the ability to revert.
 
 **Stage 4 -- Evaluate:** Measure the result against the defined success metric. Compare to baseline and to the best result so far. Determine: improved, regressed, or no change?
 
-**Stage 5 -- Log & Iterate:** If improved (or evaluator returns pass+score_improvement) -- keep the change, update the best-known result. If not -- revert the change, log the failure reason. In both cases: append a row to the History table in `research.md`, append detailed notes to `research_log.md`, append a row to `autoresearch-results.tsv`. Then check termination conditions: (1) Target metric achieved? (2) Max iterations exhausted? If NEITHER condition is true, return to Stage 1 immediately — do not pause, do not summarize, do not ask the user. Begin the next iteration NOW.
+**Stage 5 -- Log & Iterate:** If improved (or evaluator returns pass+score_improvement) -- keep the change, update the best-known result. If not -- revert the change, log the failure reason. In both cases: append a row to the History table in `research.md`, append detailed notes to `research_log.md`, append a row to `autoresearch-results.tsv`. After logging, update `progress.png` — a live convergence plot refreshed every iteration. Use the `/scientific-visualization` skill: read `autoresearch-results.tsv`, plot iteration number (x) vs metric value (y) with kept iterations as filled markers and reverted as hollow markers, overlay a best-so-far envelope line, and mark the target threshold as a horizontal dashed line. Call `rcparams()` from `scripts/style_presets.py` before plotting. Single-panel (Panel A from `references/visualization-guide.md`). Overwrite `progress.png` each iteration. Then check termination conditions: (1) Target metric achieved? (2) Max iterations exhausted? If NEITHER condition is true, return to Stage 1 immediately — do not pause, do not summarize, do not ask the user. Begin the next iteration NOW.
 
 ## The research.md Format
 
@@ -153,11 +153,11 @@ For Tier 1 environments, you can define an evaluator command that runs automatic
 - `pass_only`: keep any experiment where `pass` is `true`
 
 **Stage 4 behavior with evaluator defined:**
-1. Run the evaluator command via Bash
+1. Run the evaluator command via Bash, wrapped with `timeout 5m`: e.g. `timeout 5m python evaluate.py`
 2. Parse the JSON output
 3. Apply the keep policy automatically
 4. Log the evaluator output in `research_log.md`
-5. If evaluator errors (crash, invalid JSON), treat as failed experiment — revert and continue
+5. If evaluator errors (crash, invalid JSON, or timeout — exit code 124), treat as failed experiment — revert and continue
 
 **Without evaluator (default):**
 Stage 4 works as before — the agent measures the metric using available tools and applies its own judgment.
@@ -221,13 +221,15 @@ The agent reads the force field parameters and experimental reference data, runs
 
 ## Output Structure
 
-The skill produces three files:
+The skill produces four files plus a live progress plot:
 
 **`research.md` (updated):** The original file with the History table filled in. This is the living record of the research. Each iteration adds a row showing what changed, the metric value, and whether the change was kept.
 
 **`research_log.md` (append-only):** Detailed log of every experiment. Each entry includes: iteration number, hypothesis, exact changes made, full output/measurements, evaluation reasoning, and decision (keep/revert). This is the audit trail.
 
 **`final_report.md` (generated at end):** Structured summary following the template in `assets/report_template.md`. Contains: Executive Summary, Best Result with exact configuration, Iteration Summary table, Key Findings, Failed Approaches, and Recommendations for further work.
+
+**`progress.png` (updated every iteration):** Live convergence plot overwritten each iteration. Single-panel: iteration number (x) vs metric value (y), kept iterations as filled markers, reverted as hollow, best-so-far envelope, target threshold as dashed line. Generated via `/scientific-visualization` skill with `rcparams()` from `scripts/style_presets.py`.
 
 **`results.png` (generated at end):** Publication-quality visualization. Every `visualize.py` MUST call `rcparams()` from the embedded `scripts/style_presets.py` before any plotting. Read `references/visualization-guide.md` for the full 7-rule specification. Key requirements: white background, Okabe-Ito palette, DPI 600, no titles, legend text color matches data color, two-panel layout (A: convergence, B: domain result).
 
@@ -237,7 +239,7 @@ The skill produces three files:
 - **`pause_every`** -- Optional human review checkpoint. Default: `never`. Only set this for safety-critical domains (e.g., production deployments). Pausing kills iteration velocity.
 - **Automatic rollback** -- Every experiment preserves the prior state. Failed experiments are reverted before the next iteration.
 - **`forbidden_changes`** -- Hard boundaries defined in `research.md`. The agent must never modify anything in this list (e.g., test data, API contracts, data formats).
-- **Time budget per experiment** -- Prevents a single experiment from hanging indefinitely. Default: 5 minutes.
+- **Time budget per experiment** -- Default: 5 minutes. Enforced via `timeout 5m <command>` on all Bash executions in Stage 3 and Stage 4. Exit code 124 = timeout — treat as failed experiment, revert, and continue.
 
 ## Stuck Detection & Pivot Protocol
 
@@ -290,6 +292,7 @@ When operating with a fixed `max_iterations` budget:
 | **Metric improves but breaks constraint** | Revert. Log as "constraint violation" -- the improvement does not count. |
 | **No search space left** | Expand search space: try combinations of previously-kept changes. If truly exhausted, produce `final_report.md` noting the search space was fully explored. |
 | **Ambiguous metric direction** | Ask the user to clarify: maximize or minimize? |
+| **Experiment or evaluator hangs** | `timeout` kills the process (exit 124). Revert changes, log "TIMEOUT", try a different approach next iteration. |
 
 ## Dependencies
 
