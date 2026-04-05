@@ -1,6 +1,6 @@
 iteration	metric_value	delta	delta_pct	status	description	evaluator_source	timestamp
-0	0	-	-	baseline	Seed references only (3 papers, 2/8 categories)	agent	2026-03-29
-1	3	1	50%	progress	Weight/Fat Loss covered (4 papers) + 1 Metabolic; 3/8 categories	agent	2026-03-29
-2	4	1	33%	progress	Cardiovascular + Hormonal covered; 4/8 categories, 16 papers	agent	2026-03-29
-3	6	2	50%	progress	Sleep + Metabolic covered; 6/8 categories, 20 papers	agent	2026-03-29
-4	8	2	33%	target_met	All 8/8 categories covered (>=2 each); 25 total papers	agent	2026-03-29
+0	1	0	0%	baseline	Seed: 3 meta-analyses. Muscle Performance covered (2 papers). 6 categories empty, Cardiovascular has 1.	agent	2026-04-05T00:00:00
+1	3	2	200%	improved	Weight/Fat Loss covered (3 papers: Arciero 2022, Brooker 2023, Lan 2025). Cardiovascular covered (2 papers: Sevilla-Lorente 2023, Brito 2019). +2 categories.	agent	2026-04-05T00:01:00
+2	5	2	67%	improved	Hormonal Response covered (3 papers: Hayes 2010, Bird 2004, Kuusmaa 2016). Sleep Quality covered (2 papers: Kim 2023, Yue 2022). +2 categories.	agent	2026-04-05T00:02:00
+3	7	2	40%	improved	Metabolic Health covered (2 papers: Morales-Palomo 2023, Moholdt 2021). Circadian Rhythm covered (2 papers: Thomas 2020, Shen 2023). +2 categories.	agent	2026-04-05T00:03:00
+4	8	1	14%	improved	Adherence covered (3 papers: Schumacher 2023, Back 2022, Brooker 2022). All 8/8 categories now covered with >=2 papers. TARGET MET.	agent	2026-04-05T00:04:00

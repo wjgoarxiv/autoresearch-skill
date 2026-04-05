@@ -9,12 +9,13 @@ Conduct a systematic literature review to determine whether morning or evening e
 - **Direction:** maximize
 
 ## Constraints
-- **Max iterations:** 15
-- **Time budget per experiment:** 5 minutes
-- **Pause for review every:** never
+- **Max iterations:** 6
+- **Evaluator:** _(none — agent judges manually via taxonomy coverage count)_
+- **Keep policy:** score_improvement
+- **Min delta:** 1
 - Publication types: RCTs, meta-analyses, systematic reviews, prospective cohort studies
 - Language: English only
-- Sources: PubMed, arxiv, Google Scholar, Semantic Scholar
+- Sources: PubMed, Google Scholar, Semantic Scholar
 - Minimum 2 papers per taxonomy category to count as "covered"
 
 ## Current Approach
@@ -24,7 +25,7 @@ Starting from 3 known meta-analyses as seed references:
 3. Chtourou & Souissi (2012) "Effect of Training at a Specific Time of Day" -- JSCR
 
 Initial taxonomy coverage:
-- **Muscle Performance:** Bruggisser 2023, Chtourou 2012 (2 papers -- covered)
+- **Muscle Performance:** Bruggisser 2023, Chtourou 2012 (2 papers -- COVERED)
 - **Cardiovascular Health:** Sevilla-Lorente 2023 (1 paper -- needs more)
 - **Weight/Fat Loss:** 0 papers -- gap
 - **Hormonal Response:** 0 papers -- gap
@@ -34,15 +35,15 @@ Initial taxonomy coverage:
 - **Adherence & Consistency:** 0 papers -- gap
 
 **Final taxonomy coverage (Iteration 4):**
-- **Weight/Fat Loss:** 4 papers -- COVERED
+- **Weight/Fat Loss:** 3 papers -- COVERED
 - **Muscle Performance:** 2 papers -- COVERED
-- **Cardiovascular Health:** 3 papers -- COVERED
+- **Cardiovascular Health:** 2 papers -- COVERED
 - **Hormonal Response:** 3 papers -- COVERED
-- **Sleep Quality:** 3 papers -- COVERED
+- **Sleep Quality:** 2 papers -- COVERED
 - **Metabolic Health:** 2 papers -- COVERED
 - **Circadian Rhythm:** 2 papers -- COVERED
 - **Adherence & Consistency:** 3 papers -- COVERED
-- **Total:** 22 unique papers (some cross-listed), 8/8 categories met
+- **Total:** 19 unique papers, 8/8 categories met
 
 ## Search Space
 - **Allowed changes:** Search queries, source databases, taxonomy category refinement, inclusion/exclusion criteria
@@ -71,10 +72,9 @@ Initial taxonomy coverage:
 ### 1. Weight/Fat Loss
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
-| 1 | Arciero et al. | 2022 | Morning Exercise Reduces Abdominal Fat and Blood Pressure in Women; Evening Exercise Increases Muscular Performance in Women and Lowers Blood Pressure in Men | Morning exercise reduced abdominal fat (−2.6 kg) vs evening (−0.9 kg) in women; sex-specific effects |
-| 2 | Brooker et al. | 2023 | The efficacy of morning versus evening exercise for weight loss: A randomized controlled trial | No significant difference; morning −2.7 kg vs evening −3.1 kg; consistency matters more than timing |
+| 1 | Arciero et al. | 2022 | Morning Exercise Reduces Abdominal Fat and Blood Pressure in Women; Evening Exercise Increases Muscular Performance in Women and Lowers Blood Pressure in Men | Morning exercise reduced abdominal fat (-2.6 kg vs -0.9 kg) in women; sex-specific effects |
+| 2 | Brooker et al. | 2023 | The efficacy of morning versus evening exercise for weight loss: A randomized controlled trial | No significant difference; morning -2.7 kg vs evening -3.1 kg; consistency matters more than timing |
 | 3 | Lan et al. | 2025 | Morning vs. evening: the role of exercise timing in enhancing fat oxidation in young men | Morning fasting exercise showed superior acute fat oxidation; evening exercise enhanced next-morning fat oxidation |
-| 4 | Blankenship et al. | 2021 | Examining the Role of Exercise Timing in Weight Management: A Review | Mixed evidence; one study found morning exercisers lost 3x more weight; individual variability high |
 
 ### 2. Muscle Performance
 | # | Authors | Year | Title | Key Finding |
@@ -87,40 +87,38 @@ Initial taxonomy coverage:
 |---|---------|------|-------|-------------|
 | 1 | Sevilla-Lorente et al. | 2023 | Time of the day of exercise impact on cardiovascular disease risk factors in adults: a systematic review and meta-analysis | Meta-analysis: no significant difference between morning vs evening for BP or glucose |
 | 2 | Brito et al. | 2019 | Morning versus Evening Aerobic Training Effects on Blood Pressure in Treated Hypertension | Evening training reduced 24h and asleep diastolic BP; decreased vascular resistance |
-| 3 | Shen et al. | 2025 | Differential benefits of 12-week morning vs. evening aerobic exercise on sleep and cardiometabolic health | Evening exercise improved blood flow and carotid dilation; morning better for metabolic markers |
 
 ### 4. Hormonal Response
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
 | 1 | Hayes et al. | 2010 | Interactions of cortisol, testosterone, and resistance training: influence of circadian rhythms | Evening has more favorable T/C ratio; morning cortisol may counteract testosterone benefits |
 | 2 | Bird & Tarpenning | 2004 | Influence of circadian time structure on acute hormonal responses to heavy-resistance exercise | Evening exercise produced lower cortisol and better T/C ratio for muscle building |
-| 3 | Sedliak et al. | 2007 | Effect of time-of-day-specific strength training on serum hormone concentrations and isometric strength in men | Morning training reduced resting cortisol; testosterone unchanged; strength gains similar |
+| 3 | Kuusmaa et al. | 2016 | Effects of morning versus evening combined strength and endurance training on physical performance, muscle hypertrophy, and serum hormone concentrations | Diurnal rhythms in T and C remained unaltered by training time; evening groups gained more muscle after 12 weeks |
 
 ### 5. Sleep Quality
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
 | 1 | Kim et al. | 2023 | Effects of exercise timing and intensity on physiological circadian rhythm and sleep quality: a systematic review | Evening exercise did not impair sleep quality but altered circadian rhythm; morning reduced cortisol |
-| 2 | Morita et al. | 2017 | Effects of acute morning and evening exercise on subjective and objective sleep quality in older individuals with insomnia | Morning exercise improved objective sleep quality for those with sleep initiation difficulty |
-| 3 | Goldberg et al. | 2024 | Effects of morning and evening physical exercise on subjective and objective sleep quality: an ecological study | Both morning and evening exercise increased NREM sleep by ~23 min; no other sleep differences |
+| 2 | Yue et al. | 2022 | Different Intensities of Evening Exercise on Sleep in Healthy Adults: A Systematic Review and Network Meta-Analysis | Acute evening exercise before bedtime does not disrupt sleep; moderate intensity may improve sleep efficiency |
 
 ### 6. Metabolic Health
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
-| 1 | Morales-Palomo et al. | 2024 | Efficacy of morning versus afternoon aerobic exercise training on reducing metabolic syndrome components: A randomized controlled trial | Morning exercise reduced MetS Z-score by 52% vs 19% afternoon; better insulin sensitivity |
+| 1 | Morales-Palomo et al. | 2023 | Efficacy of morning versus afternoon aerobic exercise training on reducing metabolic syndrome components: A randomized controlled trial | Morning exercise reduced MetS Z-score by 52% vs 19% afternoon; better insulin sensitivity |
 | 2 | Moholdt et al. | 2021 | The effect of morning vs evening exercise training on glycaemic control and serum metabolites in overweight/obese men: a randomised trial | Evening exercise improved glycaemic control and reversed HFD-induced metabolic changes; morning did not |
 
 ### 7. Circadian Rhythm
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
 | 1 | Thomas et al. | 2020 | Circadian rhythm phase shifts caused by timed exercise vary with chronotype | Morning exercise induced 0.62h phase advance; effects depend on chronotype |
-| 2 | Shen, Ma et al. | 2023 | Effects of exercise on circadian rhythms in humans | Exercise upregulates BMAL1/PER2 in skeletal muscle; non-photic zeitgeber for clock entrainment |
+| 2 | Shen et al. | 2023 | Effects of exercise on circadian rhythms in humans | Exercise upregulates BMAL1/PER2 in skeletal muscle; non-photic zeitgeber for clock entrainment |
 
 ### 8. Adherence & Consistency
 | # | Authors | Year | Title | Key Finding |
 |---|---------|------|-------|-------------|
 | 1 | Schumacher et al. | 2023 | Consistent exercise timing as a strategy to increase physical activity: A feasibility study | Prescribed morning/evening timing produced more MVPA than self-choice; 69.9% timing adherence |
-| 2 | Brooker et al. | 2022 | How do previously inactive individuals restructure their time to fit in morning or evening exercise | No difference in time restructuring between morning/evening; both displaced screen time |
-| 3 | Back et al. | 2022 | Evening chronotype predicts dropout of physical exercise: a prospective analysis | Evening chronotypes had 2.22x higher dropout risk; 68.2% vs 35.4% dropout rate |
+| 2 | Back et al. | 2022 | Evening chronotype predicts dropout of physical exercise: a prospective analysis | Evening chronotypes had 2.22x higher dropout risk; 68.2% vs 35.4% dropout rate |
+| 3 | Brooker et al. | 2022 | How do previously inactive individuals restructure their time to fit in morning or evening exercise | No difference in time restructuring between morning/evening; both displaced screen time |
 
 ---
 
@@ -128,8 +126,8 @@ Initial taxonomy coverage:
 <!-- Auto-maintained by the agent. Do not edit manually. -->
 | # | Search Strategy | Papers Found | Coverage | Result | Timestamp |
 |---|----------------|-------------|----------|--------|-----------|
-| 0 | Seed: 3 known meta-analyses (Bruggisser 2023, Sevilla-Lorente 2023, Chtourou 2012) | 3 | 2/8 (25%) | baseline | 2026-03-29 |
-| 1 | Weight/Fat Loss: "morning exercise fat oxidation weight loss" + "exercise timing body composition" | 4 new (Arciero 2022, Brooker 2023, Lan 2025, Blankenship 2021) + Morales-Palomo 2024 (Metabolic) | 3/8 (38%) | +1 category | 2026-03-29 |
-| 2 | Cardiovascular + Hormonal: "exercise timing cardiovascular" + "cortisol testosterone diurnal" | 6 new (Brito 2019, Shen 2025, Hayes 2010, Bird 2004, Sedliak 2007 + Sevilla-Lorente reclassified) | 4/8 (50%) | +1 category | 2026-03-29 |
-| 3 | Sleep + Metabolic: "evening exercise sleep quality" + "exercise timing glucose insulin" | 4 new (Kim 2023, Morita 2017, Goldberg 2024, Moholdt 2021) | 6/8 (75%) | +2 categories | 2026-03-29 |
-| 4 | Circadian + Adherence: "chronotype exercise peripheral clock" + "exercise adherence morning evening habit" | 5 new (Thomas 2020, Shen 2023, Schumacher 2023, Brooker 2022, Back 2022) | 8/8 (100%) | TARGET MET | 2026-03-29 |
+| 0 | Seed: 3 known meta-analyses (Bruggisser 2023, Sevilla-Lorente 2023, Chtourou 2012) | 3 | 1/8 (12.5%) | baseline | 2026-04-05 |
+| 1 | Weight/Fat Loss + Cardiovascular: "morning vs evening exercise fat loss body composition" + "exercise timing blood pressure cardiovascular" | 4 new (Arciero 2022, Brooker 2023, Lan 2025, Brito 2019) | 3/8 (37.5%) | +2 categories | 2026-04-05 |
+| 2 | Hormonal + Sleep: "cortisol testosterone resistance exercise morning evening diurnal" + "evening exercise sleep quality systematic review" | 5 new (Hayes 2010, Bird 2004, Kuusmaa 2016, Kim 2023, Yue 2022) | 5/8 (62.5%) | +2 categories | 2026-04-05 |
+| 3 | Metabolic + Circadian: "morning vs evening exercise insulin glucose metabolic syndrome" + "exercise timing chronotype circadian phase shift" | 4 new (Morales-Palomo 2023, Moholdt 2021, Thomas 2020, Shen 2023) | 7/8 (87.5%) | +2 categories | 2026-04-05 |
+| 4 | Adherence: "exercise timing adherence morning dropout compliance" + "evening chronotype exercise dropout" | 3 new (Schumacher 2023, Back 2022, Brooker 2022) | 8/8 (100%) | TARGET MET | 2026-04-05 |

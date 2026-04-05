@@ -29,6 +29,9 @@ RESEARCH_TEMPLATE = """\
 - **Pause for review every:** never
 - **Evaluator:** {evaluator}
 - **Keep policy:** {keep_policy}
+- **Guard:** {guard}
+- **Noise runs:** {noise_runs}
+- **Min delta:** {min_delta}
 
 ## Current Approach
 _Describe your current baseline here._
@@ -102,14 +105,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--keep-policy", default="score_improvement",
         choices=["score_improvement", "pass_only"],
         help="Keep policy: score_improvement (default) or pass_only.")
+    parser.add_argument("--guard", default=None, metavar="CONDITION",
+        help="Guard condition that must remain true (e.g. 'all unit tests pass'). Hard stop if violated.")
+    parser.add_argument("--noise-runs", type=int, default=1, metavar="N",
+        help="Number of runs to median over for noisy metrics. Default: 1")
+    parser.add_argument("--min-delta", type=float, default=0.0, metavar="DELTA",
+        help="Minimum improvement required to keep a change. Default: 0 (any improvement counts).")
     return parser.parse_args()
 
 
 def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations: int, output: Path,
-             evaluator: Optional[str] = None, keep_policy: str = "score_improvement") -> None:
+             evaluator: Optional[str] = None, keep_policy: str = "score_improvement",
+             guard: Optional[str] = None, noise_runs: int = 1, min_delta: float = 0.0) -> None:
     date = datetime.now().strftime("%Y-%m-%d")
     title = goal_to_title(goal)
     evaluator_str = f"`{evaluator}`" if evaluator else "_(none — agent judges manually)_"
+    guard_str = guard if guard else "_(none)_"
 
     # Create output directory (fail-safe: exist_ok=True)
     output.mkdir(parents=True, exist_ok=True)
@@ -130,6 +141,9 @@ def scaffold(goal: str, metric: str, direction: str, target: str, max_iterations
             max_iterations=max_iterations,
             evaluator=evaluator_str,
             keep_policy=keep_policy,
+            guard=guard_str,
+            noise_runs=noise_runs,
+            min_delta=min_delta,
             date=date,
         )
     )
@@ -177,6 +191,9 @@ def main() -> None:
         output=output,
         evaluator=args.evaluator,
         keep_policy=args.keep_policy,
+        guard=args.guard,
+        noise_runs=args.noise_runs,
+        min_delta=args.min_delta,
     )
 
 

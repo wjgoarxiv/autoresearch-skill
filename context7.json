@@ -1,0 +1,92 @@
+{
+  "name": "autoresearch-skill",
+  "version": "2.0.0",
+  "description": "Autonomous research loops for any domain. 9 subcommands: autoresearch, plan, debug, fix, predict, security, scenario, reason, ship.",
+  "repository": "https://github.com/wjgoarxiv/autoresearch-skill",
+  "primarySources": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "path": "guide/getting-started.md",
+      "description": "60-second quickstart, command selection guide, metric cheat sheet"
+    },
+    {
+      "id": "core-loop",
+      "title": "Core Autoresearch Loop",
+      "path": "guide/autoresearch.md",
+      "description": "5-stage loop, evaluator contract, overnight runs, stuck detection"
+    },
+    {
+      "id": "plan",
+      "title": "Plan Command",
+      "path": "guide/plan.md",
+      "description": "7-step setup wizard that produces research.md"
+    },
+    {
+      "id": "debug",
+      "title": "Debug Command",
+      "path": "guide/debug.md",
+      "description": "Scientific bug hunting with falsifiable hypotheses"
+    },
+    {
+      "id": "fix",
+      "title": "Fix Command",
+      "path": "guide/fix.md",
+      "description": "Iterative error crusher, auto-stops at 0 errors"
+    },
+    {
+      "id": "predict",
+      "title": "Predict Command",
+      "path": "guide/predict.md",
+      "description": "Multi-persona deliberation with anti-herd detection"
+    },
+    {
+      "id": "security",
+      "title": "Security Command",
+      "path": "guide/security.md",
+      "description": "STRIDE+OWASP iterative security audit"
+    },
+    {
+      "id": "scenario",
+      "title": "Scenario Command",
+      "path": "guide/scenario.md",
+      "description": "12-dimension scenario exploration"
+    },
+    {
+      "id": "reason",
+      "title": "Reason Command",
+      "path": "guide/reason.md",
+      "description": "Adversarial refinement with blind-judge panel"
+    },
+    {
+      "id": "ship",
+      "title": "Ship Command",
+      "path": "guide/ship.md",
+      "description": "Universal shipping workflow for 9 artifact types"
+    },
+    {
+      "id": "chains",
+      "title": "Chains and Combinations",
+      "path": "guide/chains-and-combinations.md",
+      "description": "How to chain commands together using file-based state"
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced Patterns",
+      "path": "guide/advanced-patterns.md",
+      "description": "Guards, noise handling, CI/CD integration, FAQ"
+    },
+    {
+      "id": "evaluator-contract",
+      "title": "Evaluator Contract",
+      "path": "skills/autoresearch/evaluator-contract.md",
+      "description": "JSON contract spec for mechanical evaluators"
+    },
+    {
+      "id": "core-principles",
+      "title": "Core Principles",
+      "path": "references/core-principles.md",
+      "description": "8 Karpathy-inspired principles behind autoresearch-skill"
+    }
+  ]
+}

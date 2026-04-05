@@ -12,20 +12,22 @@
   <img src="https://img.shields.io/badge/license-MIT-blue" />
   <img src="https://img.shields.io/badge/python-3.8+-green" />
   <img src="https://img.shields.io/badge/skill-Claude%20Code%20%7C%20Codex%20%7C%20OpenCode%20%7C%20Gemini-blueviolet" />
+  <img src="https://img.shields.io/badge/Claude%20Code-supported-blueviolet?logo=anthropic" />
+  <img src="https://img.shields.io/badge/Codex%20CLI-supported-black?logo=openai" />
+  <img src="https://img.shields.io/badge/OpenCode-supported-orange" />
+  <img src="https://img.shields.io/badge/Gemini%20CLI-supported-blue?logo=google" />
 </p>
 
 ---
 
 ### autoresearch-skill in Action
 
-| | Without autoresearch-skill | With autoresearch-skill |
-|:---:|:---:|:---:|
 | | Example | Result | Iterations | Evaluator |
 |:---:|:---|:---|:---:|:---:|
-| 1 | **Code Optimization** — Sort 1M integers faster | 2.40s → 0.16s (-93%) | 11 | `benchmark.py` |
-| 2 | **Literature Review** — Exercise timing papers | 0/8 → 8/8 categories, 25 papers | 4 | Agent (Tier 2) |
-| 3 | **Skill Elaboration** — Improve P&ID analysis skill | 0.28 → 0.98 composite | 7 | `evaluate.py` |
-| 4 | **Function Fitting** — Discover hidden math function | RMSE 2.11 → 0.034 | 18 | `evaluate.py` |
+| 1 | **Code Optimization** — Sort 1M integers faster | 2.12s → 0.15s (−93%) | 8 | `benchmark.py` |
+| 2 | **Function Fitting** — Discover hidden math function | RMSE 2.11 → 0.030 (−99%) | 8 | `evaluate.py` |
+| 3 | **Skill Elaboration** — Improve P&ID analysis skill | 0.28 → 0.98 composite (+255%) | 2 | `evaluate.py` |
+| 4 | **Literature Review** — Exercise timing papers | 1/8 → 8/8 categories, 19 papers | 4 | Agent (Tier 2) |
 
 > [!NOTE]
 > An LLM skill that turns natural-language research goals into autonomous experiment-evaluate-iterate loops -- inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). Write a `research.md`, and the agent handles hypothesis generation, experimentation, evaluation, and iteration. Works with Claude Code, Codex CLI, and Gemini CLI.
@@ -40,6 +42,37 @@
 - **Full Audit Trail** -- Every iteration logged to `research_log.md` with timestamps, changes, and results
 - **3 Tier Environment Detection** -- Adapts to your runtime: full experimentation (Tier 1), research-only (Tier 2), or analysis-only (Tier 3)
 - **Safety Built In** -- Max iterations, pause-for-review intervals, forbidden-change boundaries, and time budgets
+
+## Command Inventory
+
+| Command | Purpose |
+|---------|---------|
+| `/autoresearch` | Core 5-stage loop — understand, hypothesize, experiment, evaluate, log & iterate |
+| `/autoresearch:plan` | 7-step setup wizard that produces a ready-to-run `research.md` |
+| `/autoresearch:debug` | Scientific bug hunting with falsifiable hypotheses and evidence tables |
+| `/autoresearch:fix` | Iterative error crusher — runs until error count reaches zero |
+| `/autoresearch:predict` | Multi-persona deliberation with anti-herd-bias detection |
+| `/autoresearch:security` | STRIDE + OWASP iterative security audit |
+| `/autoresearch:scenario` | 12-dimension scenario exploration for decision analysis |
+| `/autoresearch:reason` | Adversarial refinement with blind-judge scoring panel |
+| `/autoresearch:ship` | Universal shipping workflow supporting 9 ship types |
+| `/autoresearch:learn` | _(planned)_ Self-improving skill loop from feedback |
+
+## Quick Decision Guide
+
+**What do you want to do?**
+
+| Goal | Use |
+|------|-----|
+| Optimize something iteratively toward a numeric target | `/autoresearch` |
+| Set up a new research project from scratch | `/autoresearch:plan` |
+| Hunt down a hard-to-reproduce bug | `/autoresearch:debug` |
+| Crush all errors in a codebase to zero | `/autoresearch:fix` |
+| Forecast outcomes or predict what will happen | `/autoresearch:predict` |
+| Audit a system for security vulnerabilities | `/autoresearch:security` |
+| Explore "what if" scenarios before committing to a path | `/autoresearch:scenario` |
+| Think through a complex decision rigorously | `/autoresearch:reason` |
+| Release a feature, library, or artifact | `/autoresearch:ship` |
 
 ## Why This Skill?
 
@@ -99,6 +132,17 @@ I want to install the autoresearch-skill. Do these steps:
 2. mkdir -p ~/.claude/skills/autoresearch-skill && cp -r /tmp/autoresearch-skill/SKILL.md /tmp/autoresearch-skill/scripts /tmp/autoresearch-skill/assets ~/.claude/skills/autoresearch-skill/
 3. Test: python ~/.claude/skills/autoresearch-skill/scripts/init_research.py --goal "test" --metric "score" --direction maximize --output /tmp/test-research && echo "OK: autoresearch-skill installed"
 4. Say "autoresearch-skill installed successfully"
+```
+
+### Plugin Marketplace Install
+
+If your LLM CLI supports a plugin marketplace (`.claude-plugin/` discovery), paste this single block into your chat:
+
+```
+Install the autoresearch-skill plugin:
+1. git clone https://github.com/wjgoarxiv/autoresearch-skill.git /tmp/autoresearch-skill
+2. mkdir -p ~/.claude/plugins && cp -r /tmp/autoresearch-skill/.claude-plugin ~/.claude/plugins/autoresearch-skill
+3. Reload plugins and confirm: "autoresearch-skill plugin installed"
 ```
 
 ### Manual Install

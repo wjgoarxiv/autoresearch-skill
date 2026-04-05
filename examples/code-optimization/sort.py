@@ -3,7 +3,5 @@
 
 
 def sort_integers(arr: list[int]) -> list[int]:
-    """In-place sort using list.sort() -- avoids copy overhead of sorted()."""
-    arr = arr[:]  # copy to avoid mutating input (benchmark passes fresh copy anyway)
-    arr.sort()
-    return arr
+    """Use CPython's built-in sorted() -- single-call, avoids explicit copy."""
+    return sorted(arr)

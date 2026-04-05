@@ -1,142 +1,102 @@
-# Final Report: Morning vs Evening Exercise Effectiveness
+# Final Report: Morning vs Evening Exercise -- Taxonomy of Research Evidence
 
-## Executive Summary
+## Overview
 
-This systematic literature review examined whether morning or evening exercise is more effective across 8 health and fitness outcome categories. After 4 iterations of autonomous search (out of 15 maximum), 25 papers were cataloged achieving 100% taxonomy coverage (8/8 categories with >=2 papers each).
+This literature review systematically built a taxonomy of morning vs evening exercise research across 8 outcome categories. Starting from 3 seed meta-analyses covering 1 category, the autoresearch loop reached 8/8 coverage in 4 iterations, cataloging 19 unique papers.
 
-**Key finding:** There is no universally superior exercise time. The optimal timing depends on the specific outcome sought, individual chronotype, and sex. The evidence strongly supports that *consistency of timing* matters more than the specific time chosen.
+## Taxonomy Summary
 
-## Methodology
+| # | Category | Papers | Status | Favors Morning | Favors Evening | Mixed/No Difference |
+|---|----------|--------|--------|----------------|----------------|---------------------|
+| 1 | Weight/Fat Loss | 3 | COVERED | Acute fat oxidation (Lan 2025); abdominal fat in women (Arciero 2022) | -- | No overall difference (Brooker 2023) |
+| 2 | Muscle Performance | 2 | COVERED | -- | Strength/power peaks align with body temp (Bruggisser 2023, Chtourou 2012) | -- |
+| 3 | Cardiovascular Health | 2 | COVERED | -- | Evening BP reduction in hypertensives (Brito 2019) | No acute difference (Sevilla-Lorente 2023) |
+| 4 | Hormonal Response | 3 | COVERED | -- | Better T/C ratio (Hayes 2010, Bird 2004); more muscle after 12 wk (Kuusmaa 2016) | -- |
+| 5 | Sleep Quality | 2 | COVERED | Morning reduces cortisol awakening (Kim 2023) | -- | Evening exercise does not disrupt sleep (Yue 2022) |
+| 6 | Metabolic Health | 2 | COVERED | MetS Z-score -52% vs -19% (Morales-Palomo 2023) | Glycaemic control improved (Moholdt 2021) | Contradictory results |
+| 7 | Circadian Rhythm | 2 | COVERED | Phase advance 0.62h (Thomas 2020) | -- | Chronotype-dependent (Shen 2023) |
+| 8 | Adherence & Consistency | 3 | COVERED | -- | -- | Prescribed timing > self-choice (Schumacher 2023); evening chronotypes drop out 2.2x more (Back 2022) |
 
-- **Search strategy:** Iterative WebSearch across PubMed, Google Scholar, and journal databases
-- **Inclusion criteria:** RCTs, meta-analyses, systematic reviews, prospective cohort studies (English only)
-- **Iterations completed:** 4 of 15 maximum
-- **Total papers cataloged:** 25
-- **Categories covered:** 8/8 (100%)
+## Per-Category Paper List
 
-## Findings by Category
-
-### 1. Weight/Fat Loss (4 papers)
-
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Abdominal fat reduction in women (Arciero 2022) | | Overall weight loss similar (Brooker 2023) |
-| Acute fat oxidation when fasted (Lan 2025) | | High individual variability (Blankenship 2021) |
-
-**Verdict:** Morning exercise may offer modest advantages for fat loss, particularly in women and when performed fasted. However, the largest RCT (Brooker 2023) found no significant difference. Individual variability is high.
+### 1. Weight/Fat Loss (3 papers)
+1. **Arciero et al. (2022)** -- Frontiers in Physiology. Morning exercise reduced abdominal fat in women (-2.6 kg vs -0.9 kg). Evening exercise increased muscular performance in women and lowered BP in men. Sex-specific effects are a major finding.
+2. **Brooker et al. (2023)** -- Obesity. RCT of 100 inactive adults. No significant difference between morning (-2.7 kg) and evening (-3.1 kg) for weight loss. Consistency matters more than timing.
+3. **Lan et al. (2025)** -- Frontiers in Physiology. Morning fasting exercise showed superior acute fat oxidation. Evening exercise enhanced next-morning fat oxidation. Total energy expenditure was comparable across conditions.
 
 ### 2. Muscle Performance (2 papers)
+1. **Bruggisser et al. (2023)** -- Sports Medicine Open. Meta-analysis: evening training marginally better for strength and power outcomes.
+2. **Chtourou & Souissi (2012)** -- JSCR. Review: peak muscle performance in evening aligns with core body temperature peak (~17:00).
 
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| | Marginal strength/power advantage (Bruggisser 2023) | |
-| | Peak performance aligns with core temperature peak (Chtourou 2012) | |
-
-**Verdict:** Evening exercise produces marginally better strength and power outcomes, consistent with the circadian peak in core body temperature and neuromuscular readiness.
-
-### 3. Cardiovascular Health (3 papers)
-
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| | BP reduction in hypertension (Brito 2019) | No overall CVD risk factor difference (Sevilla-Lorente 2023) |
-| | Vascular function improvement (Shen 2025) | |
-
-**Verdict:** Evening exercise appears more effective for blood pressure reduction in hypertensive populations and vascular function improvement. However, meta-analytic evidence shows no significant timing difference for general CVD risk factors.
+### 3. Cardiovascular Health (2 papers)
+1. **Sevilla-Lorente et al. (2023)** -- JSAMS. Meta-analysis of 11 studies: no significant difference between morning vs evening for systolic/diastolic BP or blood glucose acutely.
+2. **Brito et al. (2019)** -- Medicine & Science in Sports & Exercise. Evening aerobic training reduced clinic and 24h diastolic BP in treated hypertensive men via decreased vascular resistance and sympathetic modulation.
 
 ### 4. Hormonal Response (3 papers)
+1. **Hayes et al. (2010)** -- Chronobiology International. Review: evening has more favorable testosterone/cortisol ratio. Morning elevated cortisol may counteract testosterone benefits for hypertrophy.
+2. **Bird & Tarpenning (2004)** -- Chronobiology International. Evening exercise (6 PM) produced lower baseline cortisol and better T/C ratio vs morning (6 AM) in weight-trained men.
+3. **Kuusmaa et al. (2016)** -- Applied Physiology, Nutrition, and Metabolism. 24-week RCT: diurnal T/C rhythms remained unchanged by training time, but evening groups gained more muscle mass after week 12.
 
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Morning training reduces resting cortisol (Sedliak 2007) | Better testosterone/cortisol ratio (Hayes 2010) | |
-| | Lower catabolic environment (Bird 2004) | |
-
-**Verdict:** Evening exercise provides a more anabolic hormonal environment (lower cortisol, better T/C ratio), which theoretically favors muscle building. Morning training may reduce baseline stress hormone levels over time.
-
-### 5. Sleep Quality (3 papers)
-
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Improved objective sleep for insomnia (Morita 2017) | | No negative effect from evening exercise (Kim 2023) |
-| | | Both timings increase NREM sleep equally (Goldberg 2024) |
-
-**Verdict:** Morning exercise is preferable for individuals with sleep initiation difficulties. However, the common belief that evening exercise disrupts sleep is not supported by evidence -- moderate-intensity evening exercise does not impair sleep quality.
+### 5. Sleep Quality (2 papers)
+1. **Kim et al. (2023)** -- Physical Activity and Nutrition. Systematic review of 9 studies: evening exercise did not impair sleep quality but altered circadian rhythm. Long-term morning exercise reduced cortisol awakening response.
+2. **Yue et al. (2022)** -- Nature and Science of Sleep. Network meta-analysis of 28 studies: acute evening exercise before bedtime does not disrupt subsequent sleep. Moderate intensity may improve sleep efficiency.
 
 ### 6. Metabolic Health (2 papers)
-
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Greater MetS Z-score reduction (Morales-Palomo 2024) | Better glycaemic control on high-fat diet (Moholdt 2021) | |
-
-**Verdict:** Mixed evidence. Morning exercise may be superior for metabolic syndrome reduction and insulin resistance, while evening exercise showed better glycaemic control in the context of a high-fat diet. The optimal timing likely depends on the specific metabolic outcome and dietary context.
+1. **Morales-Palomo et al. (2023)** -- Journal of Physiology. RCT (n=139): morning HIIT reduced MetS Z-score by 52% vs 19% afternoon. Morning improved insulin sensitivity and systolic BP more.
+2. **Moholdt et al. (2021)** -- Diabetologia. RCT (n=24): evening exercise improved fasting glucose, insulin, LDL, and nocturnal glucose profiles. Morning exercise did not reverse high-fat-diet-induced metabolic changes.
 
 ### 7. Circadian Rhythm (2 papers)
-
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Stronger phase advance for circadian alignment (Thomas 2020) | Phase advance in late chronotypes (Thomas 2020) | |
-| | | Exercise upregulates clock genes regardless of timing (Shen 2023) |
-
-**Verdict:** Morning exercise is more effective for advancing circadian phase (useful for delayed sleep phase). However, for late chronotypes, both morning and evening exercise can advance the circadian clock. Exercise at any time upregulates core clock genes (BMAL1, PER2).
+1. **Thomas et al. (2020)** -- JCI Insight. Morning exercise induced 0.62h phase advance vs -0.02h for evening. Later chronotypes advanced with both timings; earlier chronotypes delayed with evening exercise.
+2. **Shen et al. (2023)** -- Frontiers in Pharmacology. Comprehensive review: exercise upregulates BMAL1/PER2 clock genes in skeletal muscle. Exercise is a non-photic zeitgeber for peripheral clock entrainment.
 
 ### 8. Adherence & Consistency (3 papers)
+1. **Schumacher et al. (2023)** -- Translational Journal of ACSM. Feasibility RCT: prescribed morning/evening timing produced more MVPA than self-choice timing, with medium-to-large effect sizes. 69.9% timing adherence via accelerometry.
+2. **Back et al. (2022)** -- Sport Sciences for Health. Prospective study (n=153): evening chronotypes had 2.22x higher dropout risk (HR=2.22, 95% CI 1.09-4.52). 68.2% evening-type dropout vs 35.4% morning-type.
+3. **Brooker et al. (2022)** -- Journal of Behavioral Medicine. RCT: no difference in how morning vs evening exercisers restructured daily time. Both groups primarily displaced screen time to accommodate exercise.
 
-| Favors Morning | Favors Evening | Neutral |
-|---------------|---------------|---------|
-| Lower dropout rates for morning types (Back 2022) | | Prescribed timing > self-choice for MVPA (Schumacher 2023) |
-| | | Similar time restructuring patterns (Brooker 2022) |
+## Key Findings: Morning vs Evening
 
-**Verdict:** Chronotype is a significant predictor of adherence -- evening chronotypes have 2.22x higher dropout risk from structured programs. Prescribing a consistent time (morning or evening) produces more physical activity than letting people choose freely. The specific time matters less than the consistency of the habit.
+### Morning exercise advantages:
+- **Fat loss:** Superior acute fat oxidation during fasted morning exercise (Lan 2025); greater abdominal fat reduction in women (Arciero 2022)
+- **Metabolic health:** Greater reduction in metabolic syndrome components (-52% vs -19% Z-score) and insulin resistance (Morales-Palomo 2023)
+- **Circadian alignment:** Reliable phase advance (0.62h) useful for correcting delayed sleep phase (Thomas 2020)
+- **Sleep:** Long-term morning exercise reduces cortisol awakening response (Kim 2023)
 
-## Synthesis: Evidence Direction Summary
+### Evening exercise advantages:
+- **Muscle performance:** Marginally better strength/power outcomes aligned with core body temperature peak (Bruggisser 2023, Chtourou 2012)
+- **Hormonal environment:** Lower cortisol, more favorable T/C ratio for anabolism (Hayes 2010, Bird 2004); greater muscle hypertrophy after 12+ weeks (Kuusmaa 2016)
+- **Blood pressure:** Superior reductions in treated hypertensives via decreased vascular resistance (Brito 2019)
+- **Glycaemic control:** Improved fasting glucose, insulin, and nocturnal glucose profiles (Moholdt 2021)
 
-| Outcome | Morning | Evening | Neither |
-|---------|---------|---------|---------|
-| Abdominal fat loss (women) | X | | |
-| Acute fat oxidation (fasted) | X | | |
-| Overall weight loss | | | X |
-| Muscle strength/power | | X | |
-| Blood pressure (hypertension) | | X | |
-| Vascular function | | X | |
-| Testosterone/cortisol ratio | | X | |
-| Sleep quality (insomnia) | X | | |
-| Sleep quality (general) | | | X |
-| Metabolic syndrome markers | X | | |
-| Glycaemic control (HFD context) | | X | |
-| Circadian phase advance | X | | |
-| Exercise adherence | | | X (consistency matters) |
+### No clear winner / mixed evidence:
+- **Weight loss magnitude:** Comparable between timings when controlled (Brooker 2023)
+- **Acute cardiovascular markers:** No significant difference in meta-analysis (Sevilla-Lorente 2023)
+- **Sleep disruption:** Evening exercise does NOT impair sleep quality in healthy adults (Yue 2022)
+- **Adherence:** Prescribed consistent timing matters more than which time; evening chronotypes face higher dropout regardless (Back 2022, Schumacher 2023)
 
-**Morning advantages (4):** Abdominal fat, acute fat oxidation, sleep (insomnia), circadian alignment, MetS markers
-**Evening advantages (5):** Muscle performance, blood pressure, vascular function, T/C ratio, glycaemic control (HFD)
-**Neutral/depends (4):** Overall weight loss, general sleep, adherence, circadian (chronotype-dependent)
+## Critical Moderators
+1. **Sex:** Women benefit more from morning exercise for fat loss; men benefit more from evening exercise for BP (Arciero 2022)
+2. **Chronotype:** Exercise timing effects on circadian phase depend heavily on individual chronotype (Thomas 2020); evening chronotypes have much higher dropout rates (Back 2022)
+3. **Health status:** Hypertensive patients show greater BP benefits from evening training (Brito 2019); metabolic syndrome patients show greater benefits from morning training (Morales-Palomo 2023)
+4. **Training duration:** Hormonal and hypertrophy differences between timings may only emerge after 12+ weeks (Kuusmaa 2016)
 
-## Clinical Implications
+## Remaining Gaps
+- Few studies with female-only cohorts or sex-stratified analyses
+- Limited data on resistance training timing and metabolic outcomes (most metabolic studies use aerobic exercise)
+- No large-scale RCTs (>200 participants) comparing morning vs evening exercise across multiple outcome domains simultaneously
+- Chronotype-exercise timing interaction needs dedicated RCTs (the Ex-Timing trial is underway)
+- Long-term adherence data (>6 months) comparing assigned morning vs evening timing is scarce
 
-1. **Personalize by goal:** Fat loss and metabolic syndrome patients may benefit from morning exercise; strength athletes and hypertensive patients from evening sessions.
-2. **Consider chronotype:** Late chronotypes should not be forced into early morning exercise -- they show higher dropout rates and may benefit equally from evening timing.
-3. **Prioritize consistency:** The "temporal congruence effect" -- training at a consistent time regardless of which time -- appears to be the strongest predictor of long-term success.
-4. **Sex matters:** Women show more pronounced fat loss benefits from morning exercise (Arciero 2022); men show greater cardiovascular benefits from evening sessions.
+## Autoresearch Loop Summary
 
-## Limitations
+| Iteration | metric_value | delta | Status | Strategy |
+|-----------|-------------|-------|--------|----------|
+| 0 | 1 | 0 | baseline | 3 seed meta-analyses |
+| 1 | 3 | +2 | improved | Weight/Fat Loss + Cardiovascular |
+| 2 | 5 | +2 | improved | Hormonal Response + Sleep Quality |
+| 3 | 7 | +2 | improved | Metabolic Health + Circadian Rhythm |
+| 4 | 8 | +1 | improved | Adherence & Consistency -- TARGET MET |
 
-- Most studies have small sample sizes (n < 50)
-- Few studies control for chronotype as a confounding variable
-- Heterogeneity in exercise protocols (type, intensity, duration) limits cross-study comparison
-- Most evidence comes from short-term interventions (8-16 weeks)
-- Dietary control varies significantly across studies
-
-## Research Metrics
-
-| Metric | Value |
-|--------|-------|
-| Total iterations | 4 of 15 |
-| Total papers cataloged | 25 |
-| Categories covered | 8/8 (100%) |
-| Papers per category (min) | 2 |
-| Papers per category (max) | 4 |
-| Date range of papers | 2004-2025 |
-| Target achieved | Yes |
-
----
-
-*Report generated: 2026-03-29*
-*Autonomous research loop: 4 iterations, 25 papers, 8/8 taxonomy coverage*
+**Total papers cataloged:** 19 unique papers (3 seed + 16 discovered)
+**Iterations used:** 4 of 6 allowed
+**Target:** 8/8 categories with >=2 papers each -- ACHIEVED

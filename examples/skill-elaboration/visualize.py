@@ -7,6 +7,8 @@ Two-panel figure:
   B — Score component breakdown (concept coverage, section structure, depth, specificity)
 """
 
+import os
+import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -14,43 +16,13 @@ import matplotlib.ticker as ticker
 import numpy as np
 import re
 import csv
-from matplotlib import rcParams, font_manager
 from matplotlib.patches import Patch
 from pathlib import Path
 
-# ---------------------------------------------------------------------------
-# rcParams — white background, publication style
-# ---------------------------------------------------------------------------
-rcParams["figure.facecolor"] = "white"
-rcParams["axes.facecolor"] = "white"
-rcParams["savefig.facecolor"] = "white"
-rcParams["font.family"] = "sans-serif"
-_available = {f.name for f in font_manager.fontManager.ttflist}
-for _candidate in ["Arial", "Helvetica", "DejaVu Sans"]:
-    if _candidate in _available:
-        rcParams["font.sans-serif"] = [_candidate]
-        break
-rcParams["font.size"] = 12
-rcParams["axes.titlesize"] = 14
-rcParams["axes.titleweight"] = "bold"
-rcParams["axes.labelsize"] = 12
-rcParams["axes.labelweight"] = "normal"
-rcParams["axes.titlepad"] = 10
-rcParams["axes.labelpad"] = 6
-rcParams["xtick.labelsize"] = 10
-rcParams["ytick.labelsize"] = 10
-rcParams["xtick.direction"] = "in"
-rcParams["ytick.direction"] = "in"
-rcParams["xtick.major.size"] = 4
-rcParams["ytick.major.size"] = 4
-rcParams["xtick.minor.size"] = 2
-rcParams["ytick.minor.size"] = 2
-rcParams["xtick.minor.visible"] = True
-rcParams["ytick.minor.visible"] = True
-rcParams["axes.spines.top"] = False
-rcParams["axes.spines.right"] = False
-rcParams["legend.framealpha"] = 0.9
-rcParams["legend.fontsize"] = 9
+# Scientific visualization style (embedded in scripts/style_presets.py)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts'))
+from style_presets import rcparams
+rcparams()
 
 # ---------------------------------------------------------------------------
 # Okabe-Ito palette (colorblind-safe)

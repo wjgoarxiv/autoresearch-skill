@@ -8,3 +8,4 @@ workspace/
 *.egg-info/
 .env
 HANDOFF.md
+PLAN.md

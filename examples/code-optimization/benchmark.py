@@ -1,4 +1,4 @@
-"""Benchmark harness for sort_integers(). Measures median of N runs on 1M random integers."""
+"""Benchmark harness for sort_integers(). Emits only evaluator-contract JSON."""
 
 import importlib
 import json
@@ -40,7 +40,7 @@ def verify_correctness(sort_fn) -> bool:
     return True
 
 
-def benchmark(sort_fn, data: list[int], runs: int = 5) -> dict:
+def benchmark(sort_fn, data: list[int], runs: int = 3) -> dict:
     """Run sort_fn on data for N runs. Return timing stats."""
     times = []
     for i in range(runs):
@@ -54,11 +54,11 @@ def benchmark(sort_fn, data: list[int], runs: int = 5) -> dict:
             return {"error": "incorrect output", "times": times}
 
     return {
-        "median": round(statistics.median(times), 4),
-        "mean": round(statistics.mean(times), 4),
-        "min": round(min(times), 4),
-        "max": round(max(times), 4),
-        "stdev": round(statistics.stdev(times), 4) if len(times) > 1 else 0,
+        "median": round(statistics.median(times), 6),
+        "mean": round(statistics.mean(times), 6),
+        "min": round(min(times), 6),
+        "max": round(max(times), 6),
+        "stdev": round(statistics.stdev(times), 6) if len(times) > 1 else 0,
         "times": [round(t, 4) for t in times],
     }
 
@@ -71,32 +71,17 @@ def main():
     import sort
     importlib.reload(sort)
 
-    print("Verifying correctness...")
     if not verify_correctness(sort.sort_integers):
-        print("CORRECTNESS CHECK FAILED. Aborting benchmark.")
+        print(json.dumps({"pass": False, "score": -999.0}))
         sys.exit(1)
-    print("Correctness: PASS")
-
-    print("\nGenerating 1M random integers (seed=42)...")
     data = generate_test_data()
-
-    print(f"Running benchmark (5 runs)...")
-    results = benchmark(sort.sort_integers, data, runs=5)
+    results = benchmark(sort.sort_integers, data, runs=3)
 
     if "error" in results:
-        print(f"\nBENCHMARK FAILED: {results['error']}")
+        print(json.dumps({"pass": False, "score": -999.0}))
         sys.exit(1)
-
-    print(f"\nResults:")
-    print(f"  Median: {results['median']}s")
-    print(f"  Mean:   {results['mean']}s")
-    print(f"  Min:    {results['min']}s")
-    print(f"  Max:    {results['max']}s")
-    print(f"  Stdev:  {results['stdev']}s")
-    print(f"  Runs:   {results['times']}")
-
-    # Output JSON for programmatic consumption
-    print(f"\n__RESULT_JSON__:{json.dumps(results)}")
+    evaluator = {"pass": bool(results["median"] < 0.5), "score": -results["median"]}
+    print(json.dumps(evaluator))
 
 
 if __name__ == "__main__":

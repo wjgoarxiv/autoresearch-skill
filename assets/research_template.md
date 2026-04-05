@@ -14,6 +14,9 @@
 - **Pause for review every:** never
 - **Evaluator:** {optional: command that outputs JSON, e.g., `python evaluate.py`}
 - **Keep policy:** score_improvement
+- **Guard:** {optional: safety condition that must remain true, e.g., "all unit tests pass"}
+- **Noise runs:** 1
+- **Min delta:** 0
 - {Add domain-specific constraints here}
 
 ## Current Approach

@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical evaluator for the function-fitting task.
-
-Reads test_data.csv, runs predict(x) for each point, computes RMSE.
-Outputs JSON: {"pass": bool, "score": float}
-
-- pass: true if RMSE < 0.50 (generous bar — baseline is ~0.7)
-- score: negative RMSE (higher is better, for score_improvement policy)
-
-Usage: python evaluate.py
-"""
+"""Mechanical evaluator for the function-fitting task."""
 
 import csv
 import json
@@ -23,7 +14,7 @@ def main() -> None:
     except ImportError:
         print(json.dumps({"pass": False, "score": -99.0}))
         sys.exit(0)
-    except Exception as e:
+    except Exception:
         print(json.dumps({"pass": False, "score": -99.0}))
         sys.exit(0)
 
@@ -53,7 +44,7 @@ def main() -> None:
 
     # Score is negative RMSE (higher = better) for score_improvement policy
     score = round(-rmse, 6)
-    passed = rmse < 0.50
+    passed = rmse < 0.05
 
     print(json.dumps({"pass": passed, "score": score}))
 

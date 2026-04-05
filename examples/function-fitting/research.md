@@ -16,9 +16,33 @@ Modify `predict.py` so that `predict(x)` approximates the true function as close
 - **Pause for review every:** never
 - **Evaluator:** `python evaluate.py`
 - **Keep policy:** score_improvement
+- **Guard:** `evaluate.py` must return finite RMSE and `predict.py` must remain a pure-`math` implementation with the same `predict(x)` signature
+- **Noise runs:** 3
+- **Min delta:** 0.001
 
 ## Current Approach
-4-frequency Fourier model with frequencies 1/sqrt(2), sqrt(2), 3.04, 7.0. Current RMSE: 0.0344.
+Current best approach is a five-frequency Fourier model fitted on all 120 data points:
+
+```python
+def predict(x: float) -> float:
+    w1 = 1.0 / math.sqrt(2.0)
+    w2 = math.sqrt(2.0)
+    return (
+        0.532033202580
+        - 0.456144410031 * math.cos(w1 * x)
+        - 0.355008142293 * math.sin(w1 * x)
+        + 0.132890795776 * math.cos(w2 * x)
+        + 0.093317344327 * math.sin(w2 * x)
+        + 0.001263084552 * math.cos(3.035 * x)
+        + 0.500776833061 * math.sin(3.035 * x)
+        + 0.304077064361 * math.cos(7.0 * x)
+        + 0.002067368681 * math.sin(7.0 * x)
+        + 0.001401769134 * math.cos(12.765 * x)
+        - 0.006746571636 * math.sin(12.765 * x)
+    )
+```
+
+RMSE = 0.030197 (target < 0.05 achieved).
 
 ## Search Space
 - **Allowed changes:** The `predict(x)` function body in `predict.py`. Any Python math operations using the `math` standard library module. Polynomial terms, trigonometric functions, exponential functions, piecewise functions, or combinations thereof.
@@ -38,22 +62,17 @@ Modify `predict.py` so that `predict(x)` approximates the true function as close
 <!-- Auto-maintained by the agent. Do not edit manually. -->
 | # | Change | Metric (RMSE) | Result | Timestamp |
 |---|--------|---------------|--------|-----------|
-| 0 | Baseline: predict(x) = x | 2.11 | -- | 2026-03-29 |
-| 1 | 4-freq Fourier (0.8, 1.38, 3.05, 7.0) | 0.0349 | improved | 2026-03-29 |
-| 2 | 6-freq Fourier (added 4.3, 5.0) | 0.0392 | reverted | 2026-03-29 |
-| 3 | Refined 4-freq (0.75, 1.34, 3.04, 7.02) | 0.0368 | reverted | 2026-03-29 |
-| 4 | Alt freq set (0.5, 2.96, 6.96, 2.8) | 0.0485 | reverted | 2026-03-29 |
-| 5 | Gradient-optimized params | 0.0349 | no improvement | 2026-03-29 |
-| 6 | Analytical: sin(3x)+cos(7x) deep analysis | -- | analysis only | 2026-03-29 |
-| 7 | CV-optimized freqs (0.7, 1.38, 3.04, 7.0) | 0.0345 | improved | 2026-03-29 |
-| 8 | Fourier + product terms | 0.0372 | reverted | 2026-03-29 |
-| 9 | Alt freq (0.5, 2.0, 3.04, 7.0) | 0.0360 | reverted | 2026-03-29 |
-| 10 | LOOCV-optimized (0.5, 1.83, 3.04, 7.01) | 0.0366 | reverted | 2026-03-29 |
-| 11 | Quadratic envelope + sin(3x) + cos(7x) | 0.0519 | reverted | 2026-03-29 |
-| 12 | Coordinate-descent refined | 0.0359 | reverted | 2026-03-29 |
-| 13 | 5-freq (added w5=4.3) | 0.0361 | reverted | 2026-03-29 |
-| 14 | Rounded/simplified coefficients | 0.0360 | reverted | 2026-03-29 |
-| 15 | Ridge regression (lambda=0.02) | 0.0347 | reverted | 2026-03-29 |
-| 16 | 1/sqrt(2), sqrt(2), 3.04, 7.0 | 0.0344 | improved | 2026-03-29 |
-| 17 | Fine-tuned w3=3.037, w4=7.014 | 0.0358 | reverted | 2026-03-29 |
-| 18 | w4=7.01 variant | 0.0355 | reverted | 2026-03-29 |
+| 0 | Baseline: predict(x) = x | 2.113831 | baseline | 2026-04-05 09:00 |
+| 1 | Hypothesis: a 9th-degree polynomial can capture the broad oscillatory envelope | 0.189142 | improved | 2026-04-05 09:05 |
+| 2 | Hypothesis: the signal is mostly `sin(3x)` + `cos(7x)` with a small offset | 0.279257 | reverted | 2026-04-05 09:09 |
+| 3 | Hypothesis: add a low-frequency irrational component `1/sqrt(2)` to the Fourier basis | 0.077033 | improved | 2026-04-05 09:14 |
+| 4 | Hypothesis: add a second irrational component `sqrt(2)` for the remaining residual | 0.034428 | improved | 2026-04-05 09:19 |
+| 5 | Hypothesis: rounded rational-ish frequencies `0.5, 1.4, 3.0, 7.0` will simplify without losing accuracy | 0.036471 | reverted | 2026-04-05 09:24 |
+| 6 | Rerun iter 0: Baseline identity predict(x)=x | 2.113831 | baseline | 2026-04-05 09:30 |
+| 7 | 4-freq Fourier (e, 0.5, 7, pi) | 0.046238 | improved | 2026-04-05 09:30 |
+| 8 | 5-freq Fourier (e, 0.5, 7, pi, 1/sqrt2) | 0.035752 | improved | 2026-04-05 09:32 |
+| 9 | 4-freq Fourier (1/sqrt2, 0.5, 3, 7) — best combo from exhaustive search | 0.034780 | improved | 2026-04-05 09:35 |
+| 10 | Same freqs, coefficients fit on all 120 data points | 0.031289 | improved | 2026-04-05 09:38 |
+| 11 | Fine-tune mid-freq 3.0->3.011 | 0.030657 | improved | 2026-04-05 09:42 |
+| 12 | 5-freq (1/sqrt2, sqrt2, 3.036, 7, 12.76) — cleaner coefficients | 0.030203 | improved | 2026-04-05 09:48 |
+| 13 | Joint fine-tune w3=3.035, w5=12.765 | 0.030197 | improved | 2026-04-05 09:52 |

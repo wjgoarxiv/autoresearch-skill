@@ -7,22 +7,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Scientific visualization style (045_scientific-visualization skill)
-try:
-    sys.path.insert(0, os.path.expanduser("~/.claude/skills/045_scientific-visualization/scripts"))
-    from style_presets import rcparams
-    rcparams()
-except ImportError:
-    # Fallback: manual rcparams approximating the skill's output
-    plt.rcParams.update({
-        "figure.facecolor": "white",
-        "axes.facecolor": "white",
-        "savefig.facecolor": "white",
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.grid": False,
-        "font.family": "sans-serif",
-    })
+# Scientific visualization style (embedded in scripts/style_presets.py)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts'))
+from style_presets import rcparams
+rcparams()
 
 # Okabe-Ito color palette
 OKI_BLUE   = "#0072B2"

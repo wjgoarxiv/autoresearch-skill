@@ -30,6 +30,9 @@ score = 0.5 * (streams_found / 15)
 - **Max iterations:** 20
 - **Evaluator:** `python evaluate.py`
 - **Keep policy:** score_improvement
+- **Guard:** `SKILL.md` must remain under 300 lines and all original `/pdf` skill sections must be present
+- **Noise runs:** 1
+- **Min delta:** 0.02
 - `SKILL.md` must remain under 300 lines.
 - All original `/pdf` skill content must be preserved (no deletions from the base skill).
 - Additions must be generalizable to other P&ID diagrams, not hardcoded for this specific diagram.

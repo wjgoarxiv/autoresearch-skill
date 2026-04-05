@@ -1,0 +1,67 @@
+{
+  "id": "wjgoarxiv/autoresearch",
+  "name": "autoresearch",
+  "version": "2.0.0",
+  "description": "Autonomous research loops for any domain. 10 commands: core loop, plan, debug, fix, predict, security, scenario, reason, ship.",
+  "author": "wjgoarxiv",
+  "repository": "https://github.com/wjgoarxiv/autoresearch-skill",
+  "homepage": "https://github.com/wjgoarxiv/autoresearch-skill",
+  "license": "MIT",
+  "tags": ["research", "automation", "optimization", "karpathy", "multi-platform"],
+  "skills": [
+    {
+      "id": "autoresearch",
+      "name": "Autonomous Research Loop",
+      "path": "skills/autoresearch/SKILL.md",
+      "command": "autoresearch"
+    },
+    {
+      "id": "autoresearch:plan",
+      "name": "Research Planner",
+      "path": "skills/plan/SKILL.md",
+      "command": "autoresearch:plan"
+    },
+    {
+      "id": "autoresearch:debug",
+      "name": "Scientific Debugger",
+      "path": "skills/debug/SKILL.md",
+      "command": "autoresearch:debug"
+    },
+    {
+      "id": "autoresearch:fix",
+      "name": "Iterative Error Crusher",
+      "path": "skills/fix/SKILL.md",
+      "command": "autoresearch:fix"
+    },
+    {
+      "id": "autoresearch:predict",
+      "name": "Multi-Persona Predictor",
+      "path": "skills/predict/SKILL.md",
+      "command": "autoresearch:predict"
+    },
+    {
+      "id": "autoresearch:security",
+      "name": "STRIDE+OWASP Security Auditor",
+      "path": "skills/security/SKILL.md",
+      "command": "autoresearch:security"
+    },
+    {
+      "id": "autoresearch:scenario",
+      "name": "12-Dimension Scenario Explorer",
+      "path": "skills/scenario/SKILL.md",
+      "command": "autoresearch:scenario"
+    },
+    {
+      "id": "autoresearch:reason",
+      "name": "Adversarial Reasoner",
+      "path": "skills/reason/SKILL.md",
+      "command": "autoresearch:reason"
+    },
+    {
+      "id": "autoresearch:ship",
+      "name": "Universal Shipping Workflow",
+      "path": "skills/ship/SKILL.md",
+      "command": "autoresearch:ship"
+    }
+  ]
+}

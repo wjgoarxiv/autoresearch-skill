@@ -1,0 +1,28 @@
+{
+  "name": "autoresearch",
+  "version": "2.0.0",
+  "description": "Autonomous research loops with 10 commands. Generalizes Karpathy's autoresearch loop to any domain with mechanical evaluation, overnight persistence, and zero dependencies.",
+  "author": {
+    "name": "wjgoarxiv",
+    "url": "https://github.com/wjgoarxiv"
+  },
+  "repository": "https://github.com/wjgoarxiv/autoresearch-skill",
+  "license": "MIT",
+  "skills": "../skills/",
+  "commands": [
+    "autoresearch",
+    "autoresearch:plan",
+    "autoresearch:debug",
+    "autoresearch:fix",
+    "autoresearch:predict",
+    "autoresearch:security",
+    "autoresearch:scenario",
+    "autoresearch:reason",
+    "autoresearch:ship"
+  ],
+  "platforms": ["claude-code", "codex-cli", "opencode", "gemini-cli"],
+  "requirements": {
+    "python": ">=3.8",
+    "dependencies": "none"
+  }
+}

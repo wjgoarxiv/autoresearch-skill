@@ -18,33 +18,11 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import numpy as np
 
-# ── Load scientific-visualization rcparams ───────────────────────────────────
-SKILL_SCRIPTS = os.path.expanduser("~/.claude/skills/045_scientific-visualization/scripts")
-if os.path.isdir(SKILL_SCRIPTS):
-    sys.path.insert(0, SKILL_SCRIPTS)
-    from style_presets import rcparams
-    rcparams()
-else:
-    # Fallback: minimal publication style if skill not installed
-    plt.rcParams.update({
-        "font.family": "sans-serif",
-        "font.sans-serif": ["Arial"],
-        "font.size": 14,
-        "axes.labelsize": 16,
-        "axes.titlesize": 18,
-        "xtick.labelsize": 12,
-        "ytick.labelsize": 12,
-        "xtick.direction": "in",
-        "ytick.direction": "in",
-        "xtick.minor.visible": True,
-        "ytick.minor.visible": True,
-        "figure.facecolor": "white",
-        "axes.edgecolor": "black",
-        "axes.linewidth": 1,
-        "legend.frameon": True,
-        "legend.edgecolor": "black",
-        "legend.framealpha": 1,
-    })
+# ── Load scientific-visualization rcparams (embedded in scripts/style_presets.py) ──
+_SCRIPTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts')
+sys.path.insert(0, _SCRIPTS_DIR)
+from style_presets import rcparams
+rcparams()
 
 # ── Constants ────────────────────────────────────────────────────────────────
 TARGET_RMSE = 0.05

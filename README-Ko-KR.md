@@ -11,19 +11,23 @@
   <img src="https://img.shields.io/github/stars/wjgoarxiv/autoresearch-skill?style=social" />
   <img src="https://img.shields.io/badge/license-MIT-blue" />
   <img src="https://img.shields.io/badge/python-3.8+-green" />
-  <img src="https://img.shields.io/badge/skill-Claude%20Code-blueviolet" />
+  <img src="https://img.shields.io/badge/skill-Claude%20Code%20%7C%20Codex%20%7C%20OpenCode%20%7C%20Gemini-blueviolet" />
+  <img src="https://img.shields.io/badge/Claude%20Code-지원-blueviolet?logo=anthropic" />
+  <img src="https://img.shields.io/badge/Codex%20CLI-지원-black?logo=openai" />
+  <img src="https://img.shields.io/badge/OpenCode-지원-orange" />
+  <img src="https://img.shields.io/badge/Gemini%20CLI-지원-blue?logo=google" />
 </p>
 
 ---
 
-### autoresearch-skill 적용 전후 비교
+### 실제 예시 결과
 
-| | autoresearch-skill 없이 | autoresearch-skill 적용 |
-|:---:|:---:|:---:|
-| **코드 최적화** | ![](./examples/comparison_figures/code_without.png) | ![](./examples/comparison_figures/code_with.png) |
-| **문헌 리뷰** | ![](./examples/comparison_figures/lit_without.png) | ![](./examples/comparison_figures/lit_with.png) |
-| **프롬프트 최적화** | ![](./examples/comparison_figures/prompt_without.png) | ![](./examples/comparison_figures/prompt_with.png) |
-| **스킬 정교화** | ![](./examples/comparison_figures/skill_without.png) | ![](./examples/comparison_figures/skill_with.png) |
+| 예시 | 반복 횟수 | 결과 | 평가자 |
+|:-----|:---:|:---|:---|
+| **코드 최적화** | 8 | 2.12s → 0.15s (−93%) | benchmark.py (실측) |
+| **함수 피팅** | 8 | RMSE 2.11 → 0.030 (−99%) | evaluate.py (기계적) |
+| **스킬 정교화** | 2 | 0.28 → 0.98 종합점수 (+255%) | evaluate.py (구조적) |
+| **문헌 리뷰** | 4 | 1/8 → 8/8 카테고리, 19편 | 에이전트 (Tier 2 웹) |
 
 > [!NOTE]
 > 자연어 연구 목표를 자율적인 실험-평가-반복 루프로 변환하는 LLM 스킬입니다. [카파시의 autoresearch](https://github.com/karpathy/autoresearch)에서 영감을 받았습니다. `research.md` 파일을 작성하면 에이전트가 가설 생성, 실험 실행, 평가, 반복을 자동으로 처리합니다. Claude Code, Codex CLI, Gemini CLI에서 작동합니다.
@@ -38,6 +42,37 @@
 - **완전한 감사 기록** -- 모든 반복이 `research_log.md`에 타임스탬프, 변경 사항, 결과와 함께 기록됩니다
 - **3단계 환경 감지** -- 런타임에 맞게 적응합니다: 완전 실험(Tier 1), 연구 전용(Tier 2), 분석 전용(Tier 3)
 - **내장 안전 장치** -- 최대 반복 횟수, 검토 대기 간격, 금지된 변경 경계, 시간 예산
+
+## 명령어 목록
+
+| 명령어 | 설명 |
+|--------|------|
+| `/autoresearch` | 자율 연구 루프 (5단계 반복 최적화) |
+| `/autoresearch:plan` | 연구 설계 마법사 (research.md 생성) |
+| `/autoresearch:debug` | 과학적 버그 추적 (가설 기반 조사) |
+| `/autoresearch:fix` | 반복 오류 제거기 (0 에러까지 자동 실행) |
+| `/autoresearch:predict` | 다중 페르소나 예측 (반군집 탐지 포함) |
+| `/autoresearch:security` | STRIDE+OWASP 보안 감사 |
+| `/autoresearch:scenario` | 12차원 시나리오 탐색 |
+| `/autoresearch:reason` | 블라인드 판사 패널 논증 정제 |
+| `/autoresearch:ship` | 범용 출시 워크플로우 (9가지 유형) |
+| `/autoresearch:learn` | _(계획 중)_ 피드백 기반 자기 개선 루프 |
+
+## 빠른 선택 가이드
+
+**무엇을 하고 싶으신가요?**
+
+| 목표 | 사용할 명령어 |
+|------|--------------|
+| 수치 목표를 향해 반복적으로 최적화 | `/autoresearch` |
+| 새 연구 프로젝트를 처음부터 설계 | `/autoresearch:plan` |
+| 재현하기 어려운 버그를 추적 | `/autoresearch:debug` |
+| 코드베이스의 모든 에러를 0으로 줄이기 | `/autoresearch:fix` |
+| 결과를 예측하거나 미래를 전망 | `/autoresearch:predict` |
+| 시스템 보안 취약점 감사 | `/autoresearch:security` |
+| 의사결정 전 "만약에" 시나리오 탐색 | `/autoresearch:scenario` |
+| 복잡한 문제를 논리적으로 정제 | `/autoresearch:reason` |
+| 기능, 라이브러리, 결과물 출시 | `/autoresearch:ship` |
 
 ## 왜 이 스킬인가?
 
@@ -99,6 +134,17 @@ I want to install the autoresearch-skill. Do these steps:
 4. Say "autoresearch-skill installed successfully"
 ```
 
+### 플러그인 마켓플레이스 설치
+
+LLM CLI가 플러그인 마켓플레이스(`.claude-plugin/` 자동 인식)를 지원하는 경우, 아래 블록을 채팅에 붙여넣으세요:
+
+```
+Install the autoresearch-skill plugin:
+1. git clone https://github.com/wjgoarxiv/autoresearch-skill.git /tmp/autoresearch-skill
+2. mkdir -p ~/.claude/plugins && cp -r /tmp/autoresearch-skill/.claude-plugin ~/.claude/plugins/autoresearch-skill
+3. Reload plugins and confirm: "autoresearch-skill plugin installed"
+```
+
 ### 수동 설치
 
 ```bash
@@ -119,6 +165,7 @@ ln -s "$(pwd)" ~/.claude/skills/autoresearch-skill
 | --------------- | --------------------------------- | ---------------------------------------------------------------------------- |
 | **Claude Code** | `~/.claude/skills/autoresearch-skill/` | 위 참조                                                                      |
 | **Codex CLI**   | `~/.codex/skills/autoresearch-skill/`  | `mkdir -p ~/.codex/skills && ln -s "$(pwd)" ~/.codex/skills/autoresearch-skill`   |
+| **OpenCode**    | `~/.config/opencode/skills/autoresearch-skill/` | `mkdir -p ~/.config/opencode/skills && ln -s "$(pwd)" ~/.config/opencode/skills/autoresearch-skill` |
 | **Gemini CLI**  | `~/.gemini/skills/autoresearch-skill/` | `mkdir -p ~/.gemini/skills && ln -s "$(pwd)" ~/.gemini/skills/autoresearch-skill` |
 
 ## 사용법

@@ -1,0 +1,13 @@
+{
+  "name": "autoresearch",
+  "version": "2.0.0",
+  "description": "Autonomous research loops for any domain. Trigger with 'autoresearch' or 'auto-research' or any of the subcommands.",
+  "skills_path": "./skills/",
+  "root_skill": "SKILL.md",
+  "author": "wjgoarxiv",
+  "repository": "https://github.com/wjgoarxiv/autoresearch-skill",
+  "install": {
+    "gemini_skills_dir": "~/.gemini/skills/autoresearch-skill",
+    "command": "mkdir -p ~/.gemini/skills && ln -s \"$(pwd)\" ~/.gemini/skills/autoresearch-skill"
+  }
+}
