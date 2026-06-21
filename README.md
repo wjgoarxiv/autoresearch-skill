@@ -30,14 +30,36 @@
 | 4 | **Literature Review** — Exercise timing papers | 1/8 → 8/8 categories, 19 papers | 4 | Agent (Tier 2) |
 
 > [!NOTE]
-> An LLM skill that turns natural-language research goals into autonomous experiment-evaluate-iterate loops -- inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). Write a `research.md`, and the agent handles hypothesis generation, experimentation, evaluation, and iteration. Works with Claude Code, Codex CLI, and Gemini CLI.
+> An LLM skill that turns natural-language research goals into autonomous experiment-evaluate-iterate loops -- inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch). Write a `research.md`, and the agent handles hypothesis generation, experimentation, evaluation, and iteration. Works with Claude Code, Codex CLI, OpenCode, and Gemini CLI.
+
+## Expected Outputs: Visual Result Gallery
+
+Each run leaves behind human-readable reports, machine-readable logs, and visual evidence. These examples are checked into the repo so you can see the shape of a completed autoresearch loop before running your own.
+
+| Example | Goal | Metric | Before → After | Iterations | Visual preview | Artifacts |
+|---|---|---:|---:|---:|---|---|
+| [Code Optimization](./examples/code-optimization/README.md) | Sort 1M integers faster | median runtime ↓ | 2.12s → 0.15s | 8 | [results.png](./examples/code-optimization/results.png) | `research.md`, `autoresearch-results.tsv`, `final_report.md` |
+| [Function Fitting](./examples/function-fitting/README.md) | Recover an unknown function from data | RMSE ↓ | 2.11 → 0.030 | 8 | [results.png](./examples/function-fitting/results.png) | `train_data.csv`, `test_data.csv`, `evaluate.py`, `final_report.md` |
+| [Skill Elaboration](./examples/skill-elaboration/README.md) | Improve a PDF/P&ID analysis skill | structural score ↑ | 0.28 → 0.98 | 2 | [results.png](./examples/skill-elaboration/results.png) | original/improved `SKILL.md`, `evaluate.py`, `final_report.md` |
+| [Literature Review](./examples/literature-review/README.md) | Fill exercise-timing literature coverage gaps | categories covered ↑ | 1/8 → 8/8 | 4 | [results.png](./examples/literature-review/results.png) | `research_log.md`, `autoresearch-results.tsv`, `final_report.md` |
+
+Typical final directory shape:
+
+```text
+my-research/
+├── research.md                 # living state + iteration history
+├── research_log.md             # append-only reasoning and evidence log
+├── autoresearch-results.tsv    # machine-readable metric table
+├── progress.png                # convergence plot refreshed during runs
+└── final_report.md             # final result, failures, and next steps
+```
 
 ## Features
 
 - **Karpathy-Inspired Loop** -- Autonomous experiment -> evaluate -> keep/revert cycle, generalized beyond ML training
 - **Natural Language Programming** -- `research.md` is your program: define goals, metrics, and constraints in plain English
 - **Zero Dependencies** -- Python stdlib only. No pip packages required for core functionality
-- **Multi-Agent Compatible** -- Works with Claude Code, Codex CLI, and Gemini CLI out of the box
+- **Multi-Agent Compatible** -- Works with Claude Code, Codex CLI, OpenCode, and Gemini CLI out of the box
 - **Automatic Rollback** -- Failed experiments are reverted automatically; only improvements are kept
 - **Full Audit Trail** -- Every iteration logged to `research_log.md` with timestamps, changes, and results
 - **3 Tier Environment Detection** -- Adapts to your runtime: full experimentation (Tier 1), research-only (Tier 2), or analysis-only (Tier 3)
@@ -56,7 +78,7 @@
 | `/autoresearch:scenario` | 12-dimension scenario exploration for decision analysis |
 | `/autoresearch:reason` | Adversarial refinement with blind-judge scoring panel |
 | `/autoresearch:ship` | Universal shipping workflow supporting 9 ship types |
-| `/autoresearch:learn` | _(planned)_ Self-improving skill loop from feedback |
+| `/autoresearch:learn` | Feedback-to-eval loop for improving the skill itself |
 
 ## Quick Decision Guide
 
@@ -73,6 +95,7 @@
 | Explore "what if" scenarios before committing to a path | `/autoresearch:scenario` |
 | Think through a complex decision rigorously | `/autoresearch:reason` |
 | Release a feature, library, or artifact | `/autoresearch:ship` |
+| Turn a failed/confusing skill run into an improvement plan | `/autoresearch:learn` |
 
 ## Why This Skill?
 
@@ -80,7 +103,7 @@ Other autoresearch implementations provide the loop concept. This repo provides 
 
 - **4 worked examples** with real measured data -- not templates, not placeholders
 - **Visual evidence** -- before/after charts, optimization trajectories, error heatmaps
-- **Multi-agent compatible** -- works with Claude Code, Codex CLI, and Gemini CLI
+- **Multi-agent compatible** -- works with Claude Code, Codex CLI, OpenCode, and Gemini CLI
 - **Copy-paste install** -- one block, paste into your LLM chat, done
 - **Scaffolding tool** -- `init_research.py` creates a ready-to-run research project in seconds
 - **Core principles** -- 8 formalized Karpathy principles with practical mapping to `research.md`
@@ -286,13 +309,16 @@ The script auto-detects your CLI tool and handles session restarts, completion d
 
 ## Output Format
 
-The skill produces three files:
+The skill produces a small, predictable artifact bundle:
 
-| File | Purpose | Grows? |
-|------|---------|--------|
-| `research.md` | Living research document with iteration history | Updated each iteration |
-| `research_log.md` | Detailed append-only experiment log | Append only |
-| `final_report.md` | Structured summary with best result and insights | Generated at end |
+| File | Purpose | Updated |
+|------|---------|---------|
+| `research.md` | Living research document with goal, constraints, search space, and history | Every iteration |
+| `research_log.md` | Detailed append-only experiment log: hypothesis, command output, evaluator result, keep/revert decision | Every iteration |
+| `autoresearch-results.tsv` | Machine-readable 8-column metric table for plotting, CI, and later analysis | Every iteration |
+| `progress.png` | Lightweight convergence plot showing metric trajectory and best-so-far envelope | Every iteration when plotting is available |
+| `results.png` / `results.pdf` | Example-specific final visualization, if the run produces one | End of run |
+| `final_report.md` | Structured summary with best result, failed attempts, reproducibility commands, and next steps | End only |
 
 ## Environment Tiers
 
@@ -309,7 +335,7 @@ The skill automatically detects your runtime capabilities:
 | Requirement | Details |
 |-------------|---------|
 | **Python** | 3.8+ (stdlib only) |
-| **LLM CLI** | Claude Code, Codex CLI, or Gemini CLI |
+| **LLM CLI** | Claude Code, Codex CLI, OpenCode, or Gemini CLI |
 | **Domain tools** | Varies by use case (e.g., Python for code optimization, web access for lit review) |
 
 ## Inspired By

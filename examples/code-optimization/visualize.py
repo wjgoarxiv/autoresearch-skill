@@ -39,7 +39,7 @@ def parse_rows(rows: list[dict]) -> list[dict]:
         status = row["status"].strip()
         if best_metric is None:
             best_metric = metric
-        elif status == "improved":
+        elif status in ("kept", "improved"):
             best_metric = min(best_metric, metric)
         parsed.append(
             {
@@ -61,7 +61,7 @@ def main() -> None:
     labels = [f"Iter {x}" for x in xs]
     colors = []
     for row in rows:
-        if row["status"] in ("baseline", "improved"):
+        if row["status"] in ("baseline", "kept", "improved"):
             colors.append(COL_KEPT)
         elif row["status"] == "reverted":
             colors.append(COL_REVERTED)

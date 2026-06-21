@@ -7,10 +7,10 @@ Each example lives in `examples/<name>/` and must include the following files:
 | File | Required | Description |
 |------|----------|-------------|
 | `research.md` | Yes | The research document used during the run (goal, metric, constraints, history) |
-| `evaluate.py` | Yes* | Evaluator script outputting `{"pass": bool, "score": number}`. Use a shell alternative if Python is not appropriate. |
+| `evaluate.py` | Yes* | Evaluator script outputting `{"pass": bool, "score": number}` where `score` is higher-is-better. Use a shell alternative if Python is not appropriate. |
 | `research_log.md` | Yes | Snippet of the actual log (at least 3 iterations showing keep/revert decisions) |
 | `results.png` | Yes | Before/after chart or optimization trajectory plot |
-| `autoresearch-results.tsv` | Yes | TSV log with columns: `iteration`, `hypothesis`, `score`, `pass`, `action` |
+| `autoresearch-results.tsv` | Yes | TSV log with columns: `iteration`, `metric_value`, `delta`, `delta_pct`, `status`, `description`, `evaluator_source`, `timestamp` |
 | `README.md` | Recommended | One paragraph describing the problem, the result, and why this example is interesting |
 
 *If the domain does not use Python, replace `evaluate.py` with the equivalent evaluator and document the format in the example's `README.md`.

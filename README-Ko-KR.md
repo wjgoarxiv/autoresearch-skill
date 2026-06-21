@@ -30,14 +30,25 @@
 | **문헌 리뷰** | 4 | 1/8 → 8/8 카테고리, 19편 | 에이전트 (Tier 2 웹) |
 
 > [!NOTE]
-> 자연어 연구 목표를 자율적인 실험-평가-반복 루프로 변환하는 LLM 스킬입니다. [카파시의 autoresearch](https://github.com/karpathy/autoresearch)에서 영감을 받았습니다. `research.md` 파일을 작성하면 에이전트가 가설 생성, 실험 실행, 평가, 반복을 자동으로 처리합니다. Claude Code, Codex CLI, Gemini CLI에서 작동합니다.
+> 자연어 연구 목표를 자율적인 실험-평가-반복 루프로 변환하는 LLM 스킬입니다. [카파시의 autoresearch](https://github.com/karpathy/autoresearch)에서 영감을 받았습니다. `research.md` 파일을 작성하면 에이전트가 가설 생성, 실험 실행, 평가, 반복을 자동으로 처리합니다. Claude Code, Codex CLI, OpenCode, Gemini CLI에서 작동합니다.
+
+## 기대 산출물: 시각 결과 갤러리
+
+완료된 실행은 사람이 읽는 보고서, 기계 판독 로그, 시각 자료를 함께 남깁니다.
+
+| 예시 | 목표 | 메트릭 | 전 → 후 | 반복 | 시각 자료 | 산출물 |
+|---|---|---:|---:|---:|---|---|
+| [코드 최적화](./examples/code-optimization/README.md) | 100만 정수 정렬 가속 | 중앙값 실행시간 ↓ | 2.12s → 0.15s | 8 | [results.png](./examples/code-optimization/results.png) | `research.md`, `autoresearch-results.tsv`, `final_report.md` |
+| [함수 피팅](./examples/function-fitting/README.md) | 데이터에서 미지 함수 복원 | RMSE ↓ | 2.11 → 0.030 | 8 | [results.png](./examples/function-fitting/results.png) | `train_data.csv`, `test_data.csv`, `evaluate.py` |
+| [스킬 정교화](./examples/skill-elaboration/README.md) | PDF/P&ID 분석 스킬 개선 | 구조 점수 ↑ | 0.28 → 0.98 | 2 | [results.png](./examples/skill-elaboration/results.png) | 원본/개선 `SKILL.md`, `final_report.md` |
+| [문헌 리뷰](./examples/literature-review/README.md) | 운동 시간 문헌 커버리지 보강 | 카테고리 ↑ | 1/8 → 8/8 | 4 | [results.png](./examples/literature-review/results.png) | `research_log.md`, `autoresearch-results.tsv` |
 
 ## 기능
 
 - **카파시 영감 루프** -- ML 트레이닝을 넘어 일반화된 자율적 실험 -> 평가 -> 유지/복원 사이클
 - **자연언어 프로그래밍** -- `research.md`가 프로그램입니다. 목표, 지표, 제약을 일반 텍스트로 정의합니다
 - **의존성 없음** -- Python 표준 라이브러리만 사용합니다. 핵심 기능에 pip 패키지 필요 없음
-- **멀티 에이전트 호환** -- Claude Code, Codex CLI, Gemini CLI에서 즉시 작동합니다
+- **멀티 에이전트 호환** -- Claude Code, Codex CLI, OpenCode, Gemini CLI에서 즉시 작동합니다
 - **자동 롤백** -- 실패한 실험은 자동으로 복원되고, 개선된 것만 유지됩니다
 - **완전한 감사 기록** -- 모든 반복이 `research_log.md`에 타임스탬프, 변경 사항, 결과와 함께 기록됩니다
 - **3단계 환경 감지** -- 런타임에 맞게 적응합니다: 완전 실험(Tier 1), 연구 전용(Tier 2), 분석 전용(Tier 3)
@@ -56,7 +67,7 @@
 | `/autoresearch:scenario` | 12차원 시나리오 탐색 |
 | `/autoresearch:reason` | 블라인드 판사 패널 논증 정제 |
 | `/autoresearch:ship` | 범용 출시 워크플로우 (9가지 유형) |
-| `/autoresearch:learn` | _(계획 중)_ 피드백 기반 자기 개선 루프 |
+| `/autoresearch:learn` | 실패/혼란 피드백을 개선 계획과 eval로 변환 |
 
 ## 빠른 선택 가이드
 
@@ -73,6 +84,7 @@
 | 의사결정 전 "만약에" 시나리오 탐색 | `/autoresearch:scenario` |
 | 복잡한 문제를 논리적으로 정제 | `/autoresearch:reason` |
 | 기능, 라이브러리, 결과물 출시 | `/autoresearch:ship` |
+| 실패하거나 헷갈린 스킬 실행을 개선 계획으로 변환 | `/autoresearch:learn` |
 
 ## 왜 이 스킬인가?
 
@@ -80,7 +92,7 @@
 
 - **4개 실제 예시** -- 실측 데이터 기반, 템플릿이나 플레이스홀더가 아님
 - **시각적 증거** -- 전/후 비교 차트, 최적화 궤적, 에러 히트맵
-- **멀티에이전트 호환** -- Claude Code, Codex CLI, Gemini CLI 모두 지원
+- **멀티에이전트 호환** -- Claude Code, Codex CLI, OpenCode, Gemini CLI 모두 지원
 - **복사-붙여넣기 설치** -- 한 블록을 LLM 채팅에 붙여넣기만 하면 완료
 - **스캐폴딩 도구** -- `init_research.py`로 수초 내에 연구 프로젝트 생성
 - **핵심 원칙** -- Karpathy 7원칙을 `research.md`에 실용적으로 매핑
@@ -100,7 +112,7 @@
 | **평가** | LLM이 결과를 자체 보고 | 수락 기준, 주관적인 경우 많음 | 기계적 평가자: `{"pass": true, "score": 0.94}` |
 | **정체 시** | 사용자가 다음 시도를 결정 | 재시도 또는 종료 | 3단계 피벗 -- 전략 전환, 패러다임 전환, 최종화 |
 | **자율성** | 사용자 턴당 한 사이클 | 높으나 검증 게이트가 일시 정지 가능 | 반복 예산 전량을 묻지 않고 소진 |
-| **야간 실행** | 실질적으로 불가 | 플랫폼 한정 (`/loop`, `CronCreate`) | 크로스플랫폼 bash 스크립트 (Claude Code, Codex, Gemini CLI) |
+| **야간 실행** | 실질적으로 불가 | 플랫폼 한정 (`/loop`, `CronCreate`) | 크로스플랫폼 bash 스크립트 (Claude Code, Codex, OpenCode, Gemini CLI) |
 | **환경** | 도구에 따라 상이 | 셸 접근을 전제 | 3-Tier 자동 감지 (셸 / 웹 전용 / 텍스트 전용) |
 | **의존성** | 도구마다 다름 | git, pytest 등 필요 | Python 3.8+ 표준 라이브러리만 |
 
@@ -124,7 +136,7 @@
 ### 복사-붙여넣기 설치
 
 > [!TIP]
-> 스킬을 지원하는 모든 LLM CLI(Claude Code, Codex, Gemini CLI)에서 작동합니다. 아래 블록을 채팅에 붙여넣으세요.
+> 스킬을 지원하는 모든 LLM CLI(Claude Code, Codex, OpenCode, Gemini CLI)에서 작동합니다. 아래 블록을 채팅에 붙여넣으세요.
 
 ```
 I want to install the autoresearch-skill. Do these steps:
@@ -248,13 +260,16 @@ python scripts/init_research.py \
 
 ## 출력 형식
 
-스킬은 3개의 파일을 생성합니다:
+스킬은 예측 가능한 산출물 묶음을 생성합니다:
 
-| 파일              | 용도                                    | 증가 여부            |
-| ----------------- | --------------------------------------- | -------------------- |
-| `research.md`     | 반복 기록이 있는 생활 중인 연구 문서    | 매 반복마다 업데이트 |
-| `research_log.md` | 상세한 추가 전용 실험 로그              | 추가만 가능          |
-| `final_report.md` | 최적 결과와 통찰력이 있는 구조화된 요약 | 마지막에 생성        |
+| 파일 | 용도 | 업데이트 |
+| --- | --- | --- |
+| `research.md` | 목표, 제약, 탐색 공간, 반복 기록이 있는 연구 문서 | 매 반복 |
+| `research_log.md` | 가설, 명령 출력, 평가자 결과, 유지/복원 판단 로그 | 매 반복 |
+| `autoresearch-results.tsv` | 플롯, CI, 분석용 8열 기계 판독 메트릭 테이블 | 매 반복 |
+| `progress.png` | 메트릭 추세와 best-so-far를 보여주는 수렴 플롯 | 가능하면 매 반복 |
+| `results.png` / `results.pdf` | 실행별 최종 시각화 | 종료 시 |
+| `final_report.md` | 최적 결과, 실패한 접근, 재현 명령, 다음 단계 요약 | 종료 시 |
 
 ## 환경 계층
 
@@ -271,7 +286,7 @@ python scripts/init_research.py \
 | 요구사항        | 상세                                                                  |
 | --------------- | --------------------------------------------------------------------- |
 | **Python**      | 3.8+ (표준 라이브러리만)                                              |
-| **LLM CLI**     | Claude Code, Codex CLI, 또는 Gemini CLI                               |
+| **LLM CLI**     | Claude Code, Codex CLI, OpenCode, 또는 Gemini CLI                     |
 | **도메인 도구** | 사용 사례에 따라 다름 (예: 코드 최적화는 Python, 문헌 검토는 웹 접근) |
 
 ## 영감

@@ -18,7 +18,8 @@
     "autoresearch:security",
     "autoresearch:scenario",
     "autoresearch:reason",
-    "autoresearch:ship"
+    "autoresearch:ship",
+    "autoresearch:learn"
   ],
   "platforms": ["claude-code", "codex-cli", "opencode", "gemini-cli"],
   "requirements": {

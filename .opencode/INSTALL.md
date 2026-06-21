@@ -7,14 +7,14 @@
 git clone https://github.com/wjgoarxiv/autoresearch-skill.git /tmp/autoresearch-skill
 
 # Link into OpenCode skills directory
-mkdir -p ~/.opencode/skills
-ln -s /tmp/autoresearch-skill ~/.opencode/skills/autoresearch-skill
+mkdir -p ~/.config/opencode/skills
+ln -s /tmp/autoresearch-skill ~/.config/opencode/skills/autoresearch-skill
 ```
 
 ## Verify Install
 
 ```bash
-python ~/.opencode/skills/autoresearch-skill/scripts/init_research.py \
+python ~/.config/opencode/skills/autoresearch-skill/scripts/init_research.py \
   --goal "test install" --metric "score" --direction maximize \
   --output /tmp/test-research && echo "OK: autoresearch-skill installed"
 ```
@@ -24,14 +24,14 @@ python ~/.opencode/skills/autoresearch-skill/scripts/init_research.py \
 Reference the skill in your OpenCode session:
 
 ```
-Load skill from ~/.opencode/skills/autoresearch-skill/SKILL.md
+Load skill from ~/.config/opencode/skills/autoresearch-skill/SKILL.md
 Then: Use autoresearch to optimize my classifier above 95% accuracy.
 ```
 
 Or use `init_research.py` to scaffold a research project first:
 
 ```bash
-python ~/.opencode/skills/autoresearch-skill/scripts/init_research.py \
+python ~/.config/opencode/skills/autoresearch-skill/scripts/init_research.py \
   --goal "Optimize webpack bundle size" \
   --metric "bundle_size_kb" \
   --direction minimize \
@@ -52,6 +52,7 @@ python ~/.opencode/skills/autoresearch-skill/scripts/init_research.py \
 | `autoresearch:scenario` | 12-dimension scenario exploration |
 | `autoresearch:reason` | Adversarial refinement with blind-judge panel |
 | `autoresearch:ship` | Universal shipping workflow (9 ship types) |
+| `autoresearch:learn` | Convert failed/confusing runs into improvement plans and evals |
 
 ## Overnight Runs (OpenCode)
 

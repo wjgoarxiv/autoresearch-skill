@@ -16,7 +16,7 @@ Tab-separated values with these columns:
 | `metric_value` | float | Measured metric value |
 | `delta` | float or `-` | Change from baseline (iteration 0) |
 | `delta_pct` | string | Percentage change from baseline |
-| `status` | enum | `baseline`, `kept`, `reverted`, `reference` |
+| `status` | enum | `baseline`, `kept`, `reverted`, `guard_violation`, `reference` |
 | `description` | string | One-line description of the change |
 | `evaluator_source` | string | `mechanical`, `agent`, or `manual` |
 | `timestamp` | ISO 8601 | When the experiment completed |

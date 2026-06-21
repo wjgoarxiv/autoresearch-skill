@@ -62,6 +62,12 @@
       "name": "Universal Shipping Workflow",
       "path": "skills/ship/SKILL.md",
       "command": "autoresearch:ship"
+    },
+    {
+      "id": "autoresearch:learn",
+      "name": "Feedback-to-Eval Learner",
+      "path": "skills/learn/SKILL.md",
+      "command": "autoresearch:learn"
     }
   ]
 }

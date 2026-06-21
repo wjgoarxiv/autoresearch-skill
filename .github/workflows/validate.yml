@@ -1,0 +1,23 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.x"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate skill package
+        run: python scripts/validate_skill.py
+      - name: Validate eval coverage
+        run: python scripts/validate_skill.py --evals
+      - name: Run tests
+        run: python -m unittest discover -s tests

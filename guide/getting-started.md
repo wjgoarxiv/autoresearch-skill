@@ -47,6 +47,7 @@ That is the full pipeline. Everything else is optional depth.
 | Explore edge cases and scenarios | `/autoresearch:scenario` | 12-dimension scenario exploration |
 | Reason carefully before acting | `/autoresearch:reason` | Adversarial refinement with blind-judge panel |
 | Deploy or publish a finished artifact | `/autoresearch:ship` | 8-phase pipeline, one mandatory confirm gate |
+| Turn feedback into an improvement plan | `/autoresearch:learn` | Creates feedback log, improvement plan, eval scenario, and patch checklist |
 
 ---
 

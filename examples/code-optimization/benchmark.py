@@ -80,7 +80,11 @@ def main():
     if "error" in results:
         print(json.dumps({"pass": False, "score": -999.0}))
         sys.exit(1)
-    evaluator = {"pass": bool(results["median"] < 0.5), "score": -results["median"]}
+    evaluator = {
+        "pass": bool(results["median"] < 0.5),
+        "score": -results["median"],
+        "metric_value": results["median"],
+    }
     print(json.dumps(evaluator))
 
 

@@ -74,7 +74,7 @@ current_best = None
 for (it, rmse, status) in iters_all:
     if current_best is None:
         current_best = rmse
-    elif status in ("improved", "baseline"):
+    elif status in ("kept", "improved", "baseline"):
         current_best = min(current_best, rmse)
     best_so_far.append((it, current_best))
 
@@ -98,7 +98,7 @@ legend_handles = []
 
 # Scatter by status
 for it, rmse, status in iters_all:
-    if status in ("baseline", "improved"):
+    if status in ("baseline", "kept", "improved"):
         col, label = COL_KEPT, "Kept"
     elif status == "reverted":
         col, label = COL_REVERTED, "Reverted"
@@ -129,7 +129,7 @@ ax1.annotate(f"Baseline: {baseline_rmse:.2f}",
              xy=(0, baseline_rmse), xytext=(2.5, baseline_rmse - 0.3),
              fontsize=10, arrowprops=dict(arrowstyle="->", color="black", lw=0.8))
 
-best_rmse = min(r for (_, r, s) in iters_all if s in ("baseline", "improved"))
+best_rmse = min(r for (_, r, s) in iters_all if s in ("baseline", "kept", "improved"))
 best_iter = next(i for (i, r, s) in iters_all if r == best_rmse)
 ax1.annotate(f"Best: {best_rmse:.4f}",
              xy=(best_iter, best_rmse), xytext=(best_iter - 6, best_rmse + 0.15),

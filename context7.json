@@ -1,7 +1,7 @@
 {
   "name": "autoresearch-skill",
   "version": "2.0.0",
-  "description": "Autonomous research loops for any domain. 9 subcommands: autoresearch, plan, debug, fix, predict, security, scenario, reason, ship.",
+  "description": "Autonomous research loops for any domain. 10 commands: autoresearch, plan, debug, fix, predict, security, scenario, reason, ship, learn.",
   "repository": "https://github.com/wjgoarxiv/autoresearch-skill",
   "primarySources": [
     {
@@ -63,6 +63,12 @@
       "title": "Ship Command",
       "path": "guide/ship.md",
       "description": "Universal shipping workflow for 9 artifact types"
+    },
+    {
+      "id": "learn",
+      "title": "Learn Command",
+      "path": "guide/learn.md",
+      "description": "Feedback-to-eval self-improvement protocol"
     },
     {
       "id": "chains",

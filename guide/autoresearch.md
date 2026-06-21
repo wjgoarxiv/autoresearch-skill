@@ -123,7 +123,8 @@ Every evaluator must print exactly one JSON line to stdout:
 ```
 
 - `pass` (bool): did this iteration meet the threshold?
-- `score` (number): the raw metric value — lower is better if direction is minimize, higher if maximize
+- `score` (number): comparison score; **higher is always better**. For minimize metrics, emit `score = -metric_value`.
+- `metric_value` (number, optional): raw human-readable metric value for plots/reports.
 
 The agent reads the last valid JSON line from stdout. Other output (print statements, progress logs) is allowed but the JSON line must be present and valid.
 
@@ -147,7 +148,7 @@ for _ in range(N_RUNS):
     times.append(time.perf_counter() - t0)
 
 median = statistics.median(times)
-print(json.dumps({"pass": median < TARGET, "score": round(median, 4)}))
+print(json.dumps({"pass": median < TARGET, "score": -round(median, 4), "metric_value": round(median, 4)}))
 ```
 
 ### Example Evaluator 2: RMSE on test set (minimize)
@@ -166,7 +167,7 @@ result = subprocess.run(
 # Expects last line of stdout: "rmse: 0.0312"
 last_line = result.stdout.strip().split("\n")[-1]
 rmse = float(last_line.split(":")[-1].strip())
-print(json.dumps({"pass": rmse < TARGET, "score": round(rmse, 6)}))
+print(json.dumps({"pass": rmse < TARGET, "score": -round(rmse, 6), "metric_value": round(rmse, 6)}))
 ```
 
 ---

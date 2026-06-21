@@ -46,7 +46,7 @@ def main() -> None:
     score = round(-rmse, 6)
     passed = rmse < 0.05
 
-    print(json.dumps({"pass": passed, "score": score}))
+    print(json.dumps({"pass": passed, "score": score, "metric_value": round(rmse, 6)}))
 
 
 if __name__ == "__main__":

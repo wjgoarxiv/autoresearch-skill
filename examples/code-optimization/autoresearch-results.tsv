@@ -1,7 +1,7 @@
 iteration	metric_value	delta	delta_pct	status	description	evaluator_source	timestamp
 0	2.117478	--	--	baseline	Naive recursive quicksort with list comprehensions	python benchmark.py	2026-04-05 09:30
-1	0.162183	-1.955295	-92.3%	improved	Use CPython Timsort via arr[:] + list.sort()	python benchmark.py	2026-04-05 09:31
-2	0.150459	-0.011724	-7.2%	improved	Use sorted(arr) single call to avoid explicit copy	python benchmark.py	2026-04-05 09:32
+1	0.162183	-1.955295	-92.3%	kept	Use CPython Timsort via arr[:] + list.sort()	python benchmark.py	2026-04-05 09:31
+2	0.150459	-0.011724	-7.2%	kept	Use sorted(arr) single call to avoid explicit copy	python benchmark.py	2026-04-05 09:32
 3	0.156891	+0.006432	+4.3%	reverted	list(arr) + in-place sort vs sorted()	python benchmark.py	2026-04-05 09:33
 4	0.653001	+0.502542	+334.0%	reverted	Counting sort with array.array -- Python loops over 10M range too slow	python benchmark.py	2026-04-05 09:34
 5	0.202860	+0.052401	+34.8%	reverted	array.array('l') + sorted() -- conversion overhead kills benefit	python benchmark.py	2026-04-05 09:35

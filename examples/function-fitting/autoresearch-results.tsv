@@ -1,9 +1,9 @@
 iteration	metric_value	delta	delta_pct	status	description	evaluator_source	timestamp
 0	2.113831	0	0	baseline	identity function return x	evaluate.py	2026-04-05T09:00:00
-1	0.046238	-2.067593	-97.81	improved	4-freq Fourier (e, 0.5, 7, pi)	evaluate.py	2026-04-05T09:30:00
-2	0.035752	-0.010486	-22.68	improved	5-freq Fourier (e, 0.5, 7, pi, 1/sqrt2)	evaluate.py	2026-04-05T09:32:00
-3	0.034780	-0.000972	-2.72	improved	4-freq Fourier (1/sqrt2, 0.5, 3, 7)	evaluate.py	2026-04-05T09:35:00
-4	0.031289	-0.003491	-10.03	improved	same freqs, coeffs fit on all 120 points	evaluate.py	2026-04-05T09:38:00
-5	0.030657	-0.000632	-2.02	improved	fine-tune mid-freq 3.0->3.011	evaluate.py	2026-04-05T09:42:00
-6	0.030203	-0.000454	-1.48	improved	5-freq (1/sqrt2, sqrt2, 3.036, 7, 12.76)	evaluate.py	2026-04-05T09:48:00
-7	0.030197	-0.000006	-0.02	improved	joint fine-tune w3=3.035, w5=12.765	evaluate.py	2026-04-05T09:52:00
+1	0.046238	-2.067593	-97.81	kept	4-freq Fourier (e, 0.5, 7, pi)	evaluate.py	2026-04-05T09:30:00
+2	0.035752	-0.010486	-22.68	kept	5-freq Fourier (e, 0.5, 7, pi, 1/sqrt2)	evaluate.py	2026-04-05T09:32:00
+3	0.034780	-0.000972	-2.72	kept	4-freq Fourier (1/sqrt2, 0.5, 3, 7)	evaluate.py	2026-04-05T09:35:00
+4	0.031289	-0.003491	-10.03	kept	same freqs, coeffs fit on all 120 points	evaluate.py	2026-04-05T09:38:00
+5	0.030657	-0.000632	-2.02	kept	fine-tune mid-freq 3.0->3.011	evaluate.py	2026-04-05T09:42:00
+6	0.030203	-0.000454	-1.48	kept	5-freq (1/sqrt2, sqrt2, 3.036, 7, 12.76)	evaluate.py	2026-04-05T09:48:00
+7	0.030197	-0.000006	-0.02	kept	joint fine-tune w3=3.035, w5=12.765	evaluate.py	2026-04-05T09:52:00
